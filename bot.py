@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 # ⚠️ ВСТАВЬ СВОЙ ТОКЕН СЮДА
-BOT_TOKEN = "8486188693:AAG_7UjavhXBkAg57V_SKqsw_iFYxwQq81E"
+BOT_TOKEN = ""
 
 # ⚠️ ТВОЙ ID АДМИНИСТРАТОРА
 YOUR_USER_ID = 1341594703
