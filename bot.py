@@ -177,6 +177,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
             InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
         ])
+        keyboard.append([
+            InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+        ])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
@@ -197,7 +200,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = query.data
     
     # --- ОБЫЧНЫЕ КНОПКИ (ДОСТУПНЫ ВСЕМ) ---
-    # Сначала обрабатываем все обычные кнопки
     if data == "device":
         keyboard = [
             [
@@ -294,6 +296,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
                 InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
             ])
+            keyboard.append([
+                InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+            ])
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(f"Привет, {user_name}, выбери нужную категорию:", reply_markup=reply_markup)
@@ -303,10 +308,44 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("📊 Нажмите на другую кнопку для просмотра.")
         return
     
-    # --- АДМИНСКИЕ КНОПКИ (ТОЛЬКО ДЛЯ АДМИНА) ---
-    # Проверяем, админ ли пользователь
+    # --- АДМИНСКИЕ КНОПКИ ---
     if not is_admin:
         await query.edit_message_text("⚠️ Эта функция временно недоступна.")
+        return
+    
+    # Рассылка
+    if data == "send_mailing":
+        keyboard = [
+            [InlineKeyboardButton("📨 Всем пользователям", callback_data="mailing_all")],
+            [InlineKeyboardButton("🔑 Только с ключевым словом", callback_data="mailing_keyword")],
+            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "📨 **Выберите кому отправить рассылку:**\n\n"
+            "⚠️ Сообщение будет отправлено после того, как вы его напишете.",
+            reply_markup=reply_markup
+        )
+        return
+    
+    # Всем пользователям
+    elif data == "mailing_all":
+        context.user_data['mailing_type'] = 'all'
+        await query.edit_message_text(
+            "📨 **Напишите текст рассылки для ВСЕХ пользователей:**\n\n"
+            "Просто отправьте сообщение в этот чат.\n"
+            "Для отмены нажмите /cancel"
+        )
+        return
+    
+    # Только с ключевым словом
+    elif data == "mailing_keyword":
+        context.user_data['mailing_type'] = 'keyword'
+        await query.edit_message_text(
+            "📨 **Напишите текст рассылки для пользователей с ключевым словом:**\n\n"
+            "Просто отправьте сообщение в этот чат.\n"
+            "Для отмены нажмите /cancel"
+        )
         return
     
     # Все пользователи
@@ -595,9 +634,66 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
     user = update.effective_user
+    user_id = user.id
     
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    # Проверяем, находится ли админ в режиме рассылки
+    if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
+        mailing_type = context.user_data['mailing_type']
+        
+        if user_message == "/cancel":
+            del context.user_data['mailing_type']
+            await update.message.reply_text("❌ Рассылка отменена.")
+            return
+        
+        # Получаем список пользователей
+        if mailing_type == 'all':
+            users = get_all_users()
+            text = "📨 **Рассылка ВСЕМ пользователям:**\n\n"
+        else:  # keyword
+            users = get_keyword_users()
+            text = "📨 **Рассылка пользователям с ключевым словом:**\n\n"
+        
+        if not users:
+            await update.message.reply_text("❌ Нет пользователей для рассылки.")
+            del context.user_data['mailing_type']
+            return
+        
+        # Отправляем сообщение всем
+        sent = 0
+        failed = 0
+        
+        # Отправляем себе статус
+        status_msg = await update.message.reply_text(f"⏳ Начинаю рассылку для {len(users)} пользователей...")
+        
+        for user_id, user_data in users.items():
+            try:
+                # Отправляем сообщение пользователю
+                await context.bot.send_message(
+                    chat_id=int(user_id),
+                    text=user_message
+                )
+                sent += 1
+                # Задержка, чтобы не превысить лимиты Telegram (30 сообщений/сек)
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                failed += 1
+                print(f"❌ Ошибка отправки {user_id}: {e}")
+        
+        # Обновляем статус
+        await status_msg.edit_text(
+            f"✅ **Рассылка завершена!**\n\n"
+            f"📤 Отправлено: {sent}\n"
+            f"❌ Не доставлено: {failed}\n"
+            f"👥 Всего: {len(users)}"
+        )
+        
+        # Удаляем режим рассылки
+        del context.user_data['mailing_type']
+        return
+    
+    # Обычная обработка сообщений (не рассылка)
     if KEYWORD in user_message:
         save_keyword_user(
             user_id=user.id,
@@ -633,6 +729,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("Пожалуйста, отправьте правильный cookie для продолжения.")
 
 # ===================================================
+# ОБРАБОТЧИК КОМАНДЫ /cancel (для отмены рассылки)
+# ===================================================
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
+        del context.user_data['mailing_type']
+        await update.message.reply_text("❌ Рассылка отменена.")
+    else:
+        await update.message.reply_text("У вас нет активной рассылки.")
+
+# ===================================================
 # ФУНКЦИЯ ЗАДЕРЖКИ (6 часов 3 минуты)
 # ===================================================
 
@@ -655,11 +763,13 @@ def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("cancel", cancel))
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
     print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
+    print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
     app.run_polling()
 
 if __name__ == "__main__":
