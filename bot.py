@@ -802,4 +802,4 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if not users:
             await update.message.reply_text("❌ Нет пользователей для рассылки.")
-           
+            del context.user_data['mailing
