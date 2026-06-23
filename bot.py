@@ -109,10 +109,6 @@ def get_referral_count(user_id):
     """Получает количество приглашенных пользователей"""
     return len(get_user_referrals(user_id))
 
-def get_monthly_users_count():
-    """Возвращает фиксированное число 57 925"""
-    return 57925
-
 # ===================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ
 # ===================================================
@@ -333,7 +329,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
-    monthly_users = get_monthly_users_count()
     
     # Базовые кнопки для всех
     keyboard = [
@@ -364,12 +359,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    # Форматируем число с пробелами для красоты
-    formatted_users = f"{monthly_users:,}".replace(',', ' ')
-    
     await update.message.reply_text(
         f"Привет, {user_name}! 👋\n\n"
-        f"👥 **Пользователей в боте: {formatted_users}**\n"
         f"🎯 **У тебя {attempts} бесплатных попыток взлома**\n"
         f"👥 Приглашено друзей: {referrals}\n"
         f"🔑 За каждого друга +1 попытка\n\n"
@@ -552,8 +543,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id = update.effective_user.id
         attempts = get_user_attempts(user_id)
         referrals = get_referral_count(user_id)
-        monthly_users = get_monthly_users_count()
-        formatted_users = f"{monthly_users:,}".replace(',', ' ')
         
         keyboard = [
             [
@@ -583,7 +572,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
             f"Привет, {user_name}! 👋\n\n"
-            f"👥 **Пользователей в боте: {formatted_users}**\n"
             f"🎯 **У тебя {attempts} попыток взлома**\n"
             f"👥 Приглашено друзей: {referrals}\n"
             f"🔑 За каждого друга +1 попытка\n\n"
@@ -1302,7 +1290,6 @@ def main():
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
     print("🎯 У каждого пользователя 3 бесплатные попытки")
     print("👥 За каждого приглашенного друга +1 попытка")
-    print("📊 Пользователей в месяц: 57 925")
     print("⏰ Задержка перед ответом: 24 часа")
     app.run_polling()
 
