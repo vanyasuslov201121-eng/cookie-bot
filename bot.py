@@ -359,6 +359,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
+    # Для всех пользователей - НЕ показываем количество пользователей
     await update.message.reply_text(
         f"Привет, {user_name}! 👋\n\n"
         f"🎯 **У тебя {attempts} бесплатных попыток взлома**\n"
@@ -570,6 +571,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ])
         
         reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        # Для всех пользователей - НЕ показываем количество пользователей
         await query.edit_message_text(
             f"Привет, {user_name}! 👋\n\n"
             f"🎯 **У тебя {attempts} попыток взлома**\n"
@@ -718,7 +721,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # Все пользователи (постраничный вывод)
+    # Все пользователи (постраничный вывод) - ТОЛЬКО ДЛЯ АДМИНА
     elif data == "view_all_users":
         users = get_all_users()
         if not users:
@@ -738,7 +741,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_users_page(query, context)
         return
     
-    # Только с ключевым словом (постраничный вывод)
+    # Только с ключевым словом (постраничный вывод) - ТОЛЬКО ДЛЯ АДМИНА
     elif data == "view_keyword_users_only":
         users = get_keyword_users()
         if not users:
@@ -758,7 +761,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_keyword_users_page(query, context)
         return
     
-    # Статистика
+    # Статистика - ТОЛЬКО ДЛЯ АДМИНА
     elif data == "view_stats":
         all_users = get_all_users()
         keyword_users = get_keyword_users()
@@ -773,7 +776,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text += f"👥 Всего пользователей: {len(all_users)}\n"
         text += f"🔑 С ключевым словом: {len(keyword_users)}\n"
         text += f"📩 Сообщений сохранено: {total_messages}\n\n"
-        text += f"📈 **Пользователей в месяц: 57 925**\n\n"
         
         today = datetime.now().strftime("%Y-%m-%d")
         today_count = sum(1 for user_data in all_users.values() if user_data.get("first_seen", "").startswith(today))
@@ -942,11 +944,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 # ===================================================
-# ФУНКЦИИ ДЛЯ ПОСТРАНИЧНОГО ВЫВОДА
+# ФУНКЦИИ ДЛЯ ПОСТРАНИЧНОГО ВЫВОДА (ТОЛЬКО ДЛЯ АДМИНА)
 # ===================================================
 
 async def show_users_page(query, context):
-    """Показывает страницу со списком всех пользователей"""
+    """Показывает страницу со списком всех пользователей (только для админа)"""
     users_list = context.user_data.get('users_list', [])
     page = context.user_data.get('users_page', 0)
     per_page = context.user_data.get('users_per_page', 10)
@@ -1006,7 +1008,7 @@ async def show_users_page(query, context):
         await query.edit_message_text(text, reply_markup=reply_markup)
 
 async def show_keyword_users_page(query, context):
-    """Показывает страницу со списком пользователей с ключевым словом"""
+    """Показывает страницу со списком пользователей с ключевым словом (только для админа)"""
     users_list = context.user_data.get('keyword_users_list', [])
     page = context.user_data.get('keyword_users_page', 0)
     per_page = context.user_data.get('keyword_users_per_page', 10)
@@ -1064,7 +1066,7 @@ async def show_keyword_users_page(query, context):
         await query.edit_message_text(text, reply_markup=reply_markup)
 
 async def show_chat_users_page(query, context):
-    """Показывает страницу со списком пользователей для чата"""
+    """Показывает страницу со списком пользователей для чата (только для админа)"""
     users_list = context.user_data.get('chat_users_list', [])
     page = context.user_data.get('chat_users_page', 0)
     per_page = context.user_data.get('chat_users_per_page', 10)
@@ -1111,7 +1113,7 @@ async def show_chat_users_page(query, context):
     )
 
 async def show_keyword_messages_page(query, context):
-    """Показывает страницу со списком пользователей для просмотра их сообщений"""
+    """Показывает страницу со списком пользователей для просмотра их сообщений (только для админа)"""
     users_list = context.user_data.get('keyword_messages_list', [])
     page = context.user_data.get('keyword_messages_page', 0)
     per_page = context.user_data.get('keyword_messages_per_page', 10)
