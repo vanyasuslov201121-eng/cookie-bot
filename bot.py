@@ -714,17 +714,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Сначала отправляем текст с кнопками
+        # Отправляем ВИДЕО с кнопками в одном сообщении
         await query.edit_message_text(
-            "📱 Вы выбрали телефон.\n\n"
-            "Посмотрите видео ниже и выполните все указания:",
-            reply_markup=keyboard_markup
+            "📱 Вы выбрали телефон.\n\nПосмотрите видео ниже:"
         )
-        
-        # Потом отправляем видео отдельным сообщением
         await query.message.reply_video(
             video="https://t.me/cookieeditort/3",
-            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает."
+            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+            reply_markup=reply_markup
         )
         return
     
@@ -738,14 +735,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            "💻 Вы выбрали компьютер.\n\n"
-            "Посмотрите видео ниже и выполните все указания:",
-            reply_markup=reply_markup
+            "💻 Вы выбрали компьютер.\n\nПосмотрите видео ниже:"
         )
-        
         await query.message.reply_video(
             video="https://t.me/cookieeditort/4",
-            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает."
+            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+            reply_markup=reply_markup
         )
         return
     
@@ -836,8 +831,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "⚠️ ВНИМАНИЕ: Удаление нельзя отменить!",
             reply_markup=reply_markup
         )
-        return
-    
+        return    
     elif data.startswith("confirm_delete_"):
         target_user_id = data.replace("confirm_delete_", "")
         users = get_keyword_users()
