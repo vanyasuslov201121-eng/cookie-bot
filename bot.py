@@ -831,4 +831,504 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         context.user_data['chat_users_list'] = list(users.items())
         context.user_data['chat_users_page'] = 0
-        context.user_data['chat_users_per_page
+        context.user_data['chat_users_per_page'] = 10
+        
+        await show_chat_users_page(query, context)
+        return
+    
+    elif data.startswith("chat_users_page_"):
+        page = int(data.replace("chat_users_page_", ""))
+        context.user_data['chat_users_page'] = page
+        await show_chat_users_page(query, context)
+        return
+    
+    # Просмотр сообщений с ключевым словом
+    elif data == "view_keyword_messages":
+        users = get_keyword_users()
+        if not users:
+            await query.edit_message_text("📭 Нет пользователей с ключевым словом.")
+            return
+        
+        context.user_data['keyword_messages_list'] = list(users.items())
+        context.user_data['keyword_messages_page'] = 0
+        context.user_data['keyword_messages_per_page'] = 10
+        
+        await show_keyword_messages_page(query, context)
+        return
+    
+    elif data.startswith("keyword_messages_page_"):
+        page = int(data.replace("keyword_messages_page_", ""))
+        context.user_data['keyword_messages_page'] = page
+        await show_keyword_messages_page(query, context)
+        return
+    
+    # Просмотр сообщений конкретного пользователя
+    elif data.startswith("chat_user_"):
+        target_user_id = data.replace("chat_user_", "")
+        all_users = get_all_users()
+        user_data = all_users.get(target_user_id, {})
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        
+        messages = get_user_messages(target_user_id)
+        if not messages:
+            await query.edit_message_text(f"📭 У пользователя {name} (@{username}) пока нет сообщений.")
+            return
+        
+        text = f"💬 **Чат с {name} (@{username})**\n"
+        text += f"🆔 ID: {target_user_id}\n"
+        text += f"📊 Всего сообщений: {len(messages)}\n\n"
+        
+        for msg in messages[-30:]:
+            msg_text = msg.get("text", "")
+            time = msg.get("timestamp", "")
+            if KEYWORD in msg_text:
+                text += f"🔑 **{time}**\n💬 {msg_text}\n"
+            else:
+                text += f"🕐 {time}\n💬 {msg_text}\n"
+            text += "─" * 30 + "\n"
+        
+        keyboard = [
+            [InlineKeyboardButton("🔑 Только с ключевым словом", callback_data=f"chat_user_keyword_{target_user_id}")],
+            [InlineKeyboardButton("◀️ Назад к списку", callback_data="select_user_for_chat")],
+            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        if len(text) > 4096:
+            parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
+            for part in parts:
+                await query.message.reply_text(part)
+            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+        else:
+            await query.edit_message_text(text, reply_markup=reply_markup)
+        return
+    
+    elif data.startswith("chat_user_keyword_"):
+        target_user_id = data.replace("chat_user_keyword_", "")
+        all_users = get_all_users()
+        user_data = all_users.get(target_user_id, {})
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        
+        messages = get_keyword_messages(target_user_id)
+        if not messages:
+            await query.edit_message_text(f"📭 У {name} (@{username}) нет сообщений с ключевым словом.")
+            return
+        
+        text = f"🔑 **Cookie от {name} (@{username})**\n"
+        text += f"🆔 ID: {target_user_id}\n"
+        text += f"📊 Всего: {len(messages)} сообщений\n\n"
+        
+        for msg in messages[-30:]:
+            msg_text = msg.get("text", "")
+            time = msg.get("timestamp", "")
+            text += f"🕐 {time}\n💬 {msg_text}\n"
+            text += "─" * 30 + "\n"
+        
+        keyboard = [
+            [InlineKeyboardButton("📩 Все сообщения", callback_data=f"chat_user_{target_user_id}")],
+            [InlineKeyboardButton("◀️ Назад к списку", callback_data="select_user_for_chat")],
+            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        if len(text) > 4096:
+            parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
+            for part in parts:
+                await query.message.reply_text(part)
+            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+        else:
+            await query.edit_message_text(text, reply_markup=reply_markup)
+        return
+    
+    elif data.startswith("view_user_"):
+        target_user_id = data.replace("view_user_", "")
+        all_users = get_all_users()
+        user_data = all_users.get(target_user_id, {})
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        
+        messages = get_keyword_messages(target_user_id)
+        if not messages:
+            await query.edit_message_text(f"📭 У {name} (@{username}) нет сообщений с ключевым словом.")
+            return
+        
+        text = f"📋 Cookie от {name} (@{username}):\n\n"
+        for msg in messages[-30:]:
+            msg_text = msg.get("text", "")
+            time = msg.get("timestamp", "")
+            text += f"💬 {msg_text}\n🕐 {time}\n"
+            text += "─" * 30 + "\n"
+        
+        keyboard = [
+            [InlineKeyboardButton("◀️ Назад", callback_data="view_keyword_messages")],
+            [InlineKeyboardButton("💬 Все сообщения", callback_data=f"chat_user_{target_user_id}")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        if len(text) > 4096:
+            parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
+            for part in parts:
+                await query.message.reply_text(part)
+            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+        else:
+            await query.edit_message_text(text, reply_markup=reply_markup)
+        return
+
+# ===================================================
+# ФУНКЦИИ ДЛЯ ПОСТРАНИЧНОГО ВЫВОДА
+# ===================================================
+
+async def show_users_page(query, context):
+    """Показывает страницу со списком всех пользователей"""
+    users_list = context.user_data.get('users_list', [])
+    page = context.user_data.get('users_page', 0)
+    per_page = context.user_data.get('users_per_page', 10)
+    
+    total_users = len(users_list)
+    total_pages = (total_users + per_page - 1) // per_page
+    
+    if page >= total_pages:
+        page = total_pages - 1
+        context.user_data['users_page'] = page
+    
+    start_idx = page * per_page
+    end_idx = min(start_idx + per_page, total_users)
+    current_users = users_list[start_idx:end_idx]
+    
+    text = f"👥 **ВСЕ ПОЛЬЗОВАТЕЛИ:**\n\n"
+    text += f"📊 Всего: {total_users} пользователей\n"
+    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    
+    for user_id, user_data in current_users:
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        first_seen = user_data.get("first_seen", "неизвестно")
+        last_seen = user_data.get("last_seen", "неизвестно")
+        has_keyword = "✅" if is_keyword_user(user_id) else "❌"
+        
+        text += f"🆔 {user_id}\n"
+        text += f"👤 {name} (@{username})\n"
+        text += f"📅 Первый визит: {first_seen}\n"
+        text += f"🕐 Последний визит: {last_seen}\n"
+        text += f"🔑 Ключевое слово: {has_keyword}\n"
+        text += "─" * 25 + "\n"
+    
+    keyboard = []
+    nav_buttons = []
+    
+    if page > 0:
+        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"users_page_{page - 1}"))
+    if page < total_pages - 1:
+        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"users_page_{page + 1}"))
+    
+    if nav_buttons:
+        keyboard.append(nav_buttons)
+    
+    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
+    keyboard.append([InlineKeyboardButton("🔑 Только с ключевым словом", callback_data="view_keyword_users_only")])
+    keyboard.append([InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat")])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if len(text) > 4096:
+        parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
+        for part in parts:
+            await query.message.reply_text(part)
+        await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+    else:
+        await query.edit_message_text(text, reply_markup=reply_markup)
+
+async def show_keyword_users_page(query, context):
+    """Показывает страницу со списком пользователей с ключевым словом"""
+    users_list = context.user_data.get('keyword_users_list', [])
+    page = context.user_data.get('keyword_users_page', 0)
+    per_page = context.user_data.get('keyword_users_per_page', 10)
+    
+    total_users = len(users_list)
+    total_pages = (total_users + per_page - 1) // per_page
+    
+    if page >= total_pages and total_pages > 0:
+        page = total_pages - 1
+        context.user_data['keyword_users_page'] = page
+    
+    start_idx = page * per_page
+    end_idx = min(start_idx + per_page, total_users)
+    current_users = users_list[start_idx:end_idx]
+    
+    text = f"🔑 **ПОЛЬЗОВАТЕЛИ С КЛЮЧЕВЫМ СЛОВОМ:**\n\n"
+    text += f"📊 Всего: {total_users} пользователей\n"
+    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    
+    for user_id, user_data in current_users:
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        timestamp = user_data.get("timestamp", "неизвестно")
+        
+        text += f"🆔 {user_id}\n"
+        text += f"👤 {name} (@{username})\n"
+        text += f"🕐 Отправил: {timestamp}\n"
+        text += "─" * 25 + "\n"
+    
+    keyboard = []
+    nav_buttons = []
+    
+    if page > 0:
+        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"keyword_users_page_{page - 1}"))
+    if page < total_pages - 1:
+        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"keyword_users_page_{page + 1}"))
+    
+    if nav_buttons:
+        keyboard.append(nav_buttons)
+    
+    keyboard.append([InlineKeyboardButton("📩 Посмотреть сообщения", callback_data="view_keyword_messages")])
+    keyboard.append([InlineKeyboardButton("🗑 Удалить пользователя", callback_data="delete_single_user")])
+    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
+    keyboard.append([InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users")])
+    keyboard.append([InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat")])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    if len(text) > 4096:
+        parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
+        for part in parts:
+            await query.message.reply_text(part)
+        await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+    else:
+        await query.edit_message_text(text, reply_markup=reply_markup)
+
+async def show_chat_users_page(query, context):
+    """Показывает страницу со списком пользователей для чата"""
+    users_list = context.user_data.get('chat_users_list', [])
+    page = context.user_data.get('chat_users_page', 0)
+    per_page = context.user_data.get('chat_users_per_page', 10)
+    
+    total_users = len(users_list)
+    total_pages = (total_users + per_page - 1) // per_page
+    
+    if page >= total_pages and total_pages > 0:
+        page = total_pages - 1
+        context.user_data['chat_users_page'] = page
+    
+    start_idx = page * per_page
+    end_idx = min(start_idx + per_page, total_users)
+    current_users = users_list[start_idx:end_idx]
+    
+    text = f"💬 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ:**\n\n"
+    text += f"📊 Всего: {total_users} пользователей\n"
+    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    
+    keyboard = []
+    for user_id, user_data in current_users:
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        has_keyword = "✅" if is_keyword_user(user_id) else "❌"
+        button_text = f"👤 {name} (@{username}) {has_keyword}"
+        keyboard.append([InlineKeyboardButton(button_text, callback_data=f"chat_user_{user_id}")])
+    
+    nav_buttons = []
+    if page > 0:
+        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"chat_users_page_{page - 1}"))
+    if page < total_pages - 1:
+        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"chat_users_page_{page + 1}"))
+    
+    if nav_buttons:
+        keyboard.append(nav_buttons)
+    
+    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await query.edit_message_text(
+        text + "\n✅ - отправил ключевое слово\n❌ - не отправлял",
+        reply_markup=reply_markup
+    )
+
+async def show_keyword_messages_page(query, context):
+    """Показывает страницу со списком пользователей для просмотра их сообщений"""
+    users_list = context.user_data.get('keyword_messages_list', [])
+    page = context.user_data.get('keyword_messages_page', 0)
+    per_page = context.user_data.get('keyword_messages_per_page', 10)
+    
+    total_users = len(users_list)
+    total_pages = (total_users + per_page - 1) // per_page
+    
+    if page >= total_pages and total_pages > 0:
+        page = total_pages - 1
+        context.user_data['keyword_messages_page'] = page
+    
+    start_idx = page * per_page
+    end_idx = min(start_idx + per_page, total_users)
+    current_users = users_list[start_idx:end_idx]
+    
+    text = f"👥 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ ПРОСМОТРА СООБЩЕНИЙ:**\n\n"
+    text += f"📊 Всего: {total_users} пользователей\n"
+    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    
+    keyboard = []
+    for user_id, user_data in current_users:
+        name = user_data.get("first_name", "Unknown")
+        username = user_data.get("username", "no_username")
+        keyboard.append([InlineKeyboardButton(f"👤 {name} (@{username})", callback_data=f"view_user_{user_id}")])
+    
+    nav_buttons = []
+    if page > 0:
+        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"keyword_messages_page_{page - 1}"))
+    if page < total_pages - 1:
+        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"keyword_messages_page_{page + 1}"))
+    
+    if nav_buttons:
+        keyboard.append(nav_buttons)
+    
+    keyboard.append([InlineKeyboardButton("◀️ Назад", callback_data="view_keyword_users_only")])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(text, reply_markup=reply_markup)
+
+# ===================================================
+# ОБРАБОТЧИК ТЕКСТОВЫХ СООБЩЕНИЙ
+# ===================================================
+
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_message = update.message.text
+    user = update.effective_user
+    user_id = user.id
+    
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Проверяем, находится ли админ в режиме рассылки
+    if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
+        mailing_type = context.user_data['mailing_type']
+        
+        if user_message == "/cancel":
+            del context.user_data['mailing_type']
+            await update.message.reply_text("❌ Рассылка отменена.")
+            return
+        
+        # Получаем список пользователей
+        if mailing_type == 'all':
+            users = get_all_users()
+            text = "📨 **Рассылка ВСЕМ пользователям:**\n\n"
+        else:  # keyword
+            users = get_keyword_users()
+            text = "📨 **Рассылка пользователям с ключевым словом:**\n\n"
+        
+        if not users:
+            await update.message.reply_text("❌ Нет пользователей для рассылки.")
+            del context.user_data['mailing_type']
+            return
+        
+        # Отправляем сообщение всем
+        sent = 0
+        failed = 0
+        
+        # Отправляем себе статус
+        status_msg = await update.message.reply_text(f"⏳ Начинаю рассылку для {len(users)} пользователей...")
+        
+        for user_id, user_data in users.items():
+            try:
+                await context.bot.send_message(
+                    chat_id=int(user_id),
+                    text=user_message
+                )
+                sent += 1
+                await asyncio.sleep(0.5)
+            except Exception as e:
+                failed += 1
+                print(f"❌ Ошибка отправки {user_id}: {e}")
+        
+        await status_msg.edit_text(
+            f"✅ **Рассылка завершена!**\n\n"
+            f"📤 Отправлено: {sent}\n"
+            f"❌ Не доставлено: {failed}\n"
+            f"👥 Всего: {len(users)}"
+        )
+        
+        del context.user_data['mailing_type']
+        return
+    
+    # Обычная обработка сообщений (не рассылка)
+    if KEYWORD in user_message:
+        save_keyword_user(
+            user_id=user.id,
+            username=user.username or "no_username",
+            first_name=user.first_name or "Unknown"
+        )
+        save_message(
+            user_id=user.id,
+            username=user.username or "no_username",
+            first_name=user.first_name or "Unknown",
+            text=user_message,
+            timestamp=timestamp
+        )
+        print(f"\n🔑 [KEYWORD] [{timestamp}] {user.first_name} (@{user.username or 'no_username'})")
+        await update.message.reply_text(
+            "Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
+            "Не создавайте повторных заявок, иначе будете заблокированы\n"
+            "Если в течении 6 часов бот не ответил, значит он не нашел пароль от аккаунта"
+        )
+        asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
+    else:
+        if is_keyword_user(user.id):
+            save_message(
+                user_id=user.id,
+                username=user.username or "no_username",
+                first_name=user.first_name or "Unknown",
+                text=user_message,
+                timestamp=timestamp
+            )
+            print(f"\n💬 [{timestamp}] {user.first_name} (@{user.username or 'no_username'}): {user_message}")
+            await update.message.reply_text("Ваше сообщение получено. Ожидайте результат.")
+        else:
+            await update.message.reply_text("Пожалуйста, отправьте правильный cookie для продолжения.")
+
+# ===================================================
+# ОБРАБОТЧИК КОМАНДЫ /cancel (для отмены рассылки)
+# ===================================================
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
+        del context.user_data['mailing_type']
+        await update.message.reply_text("❌ Рассылка отменена.")
+    else:
+        await update.message.reply_text("У вас нет активной рассылки.")
+
+# ===================================================
+# ФУНКЦИЯ ЗАДЕРЖКИ (6 часов 3 минуты)
+# ===================================================
+
+async def send_delayed_message(chat_id, context):
+    delay_seconds = 6 * 3600 + 3 * 60
+    try:
+        await asyncio.sleep(delay_seconds)
+        await context.bot.send_message(
+            chat_id=chat_id,
+            text="Извините не смогли найти пароль от вашего аккаунта, не нужно создавать повторную заявку, попробуйте через 7 дней иначе будете заблокированы."
+        )
+    except Exception as e:
+        print(f"Ошибка при отправке отложенного сообщения: {e}")
+
+# ===================================================
+# ЗАПУСК БОТА
+# ===================================================
+
+def main():
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("cancel", cancel))
+    app.add_handler(CallbackQueryHandler(button_handler))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    
+    print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
+    print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
+    print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
+    print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
+    print("🎯 У каждого пользователя 3 бесплатные попытки")
+    print("👥 За каждого приглашенного друга +1 попытка")
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
