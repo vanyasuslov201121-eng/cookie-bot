@@ -706,6 +706,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "phone":
+        # Сначала отправляем видео
+        await query.message.reply_video(
+            video="https://t.me/cookieeditort/3",
+            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает."
+        )
+        
+        # Потом отправляем сообщение с кнопками
         keyboard = [
             [
                 InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
@@ -714,18 +721,22 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Отправляем ВИДЕО с кнопками в одном сообщении
         await query.edit_message_text(
-            "📱 Вы выбрали телефон.\n\nПосмотрите видео ниже:"
-        )
-        await query.message.reply_video(
-            video="https://t.me/cookieeditort/3",
-            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+            "📱 Вы выбрали телефон.\n\n"
+            "Посмотрите видео выше и выполните все указания.\n"
+            "После того как скопируете куки, нажмите кнопку ниже:",
             reply_markup=reply_markup
         )
         return
     
     elif data == "computer":
+        # Сначала отправляем видео
+        await query.message.reply_video(
+            video="https://t.me/cookieeditort/4",
+            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает."
+        )
+        
+        # Потом отправляем сообщение с кнопками
         keyboard = [
             [
                 InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
@@ -735,11 +746,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            "💻 Вы выбрали компьютер.\n\nПосмотрите видео ниже:"
-        )
-        await query.message.reply_video(
-            video="https://t.me/cookieeditort/4",
-            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+            "💻 Вы выбрали компьютер.\n\n"
+            "Посмотрите видео выше и выполните все указания.\n"
+            "После того как скопируете куки, нажмите кнопку ниже:",
             reply_markup=reply_markup
         )
         return
@@ -831,7 +840,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "⚠️ ВНИМАНИЕ: Удаление нельзя отменить!",
             reply_markup=reply_markup
         )
-        return    
+        return
+    
     elif data.startswith("confirm_delete_"):
         target_user_id = data.replace("confirm_delete_", "")
         users = get_keyword_users()
