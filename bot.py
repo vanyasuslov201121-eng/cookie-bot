@@ -594,7 +594,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
-    print(f"🔘 Нажата кнопка: {data}")  # Для отладки
+    print(f"🔘 Нажата кнопка: {data}")
     
     # --- НОВЫЕ КНОПКИ ---
     if data == "my_attempts":
@@ -748,15 +748,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "cookies_copied":
-        # Проверяем попытки
-        available = get_available_attempts(user_id)
-        if available <= 0:
-            await query.edit_message_text(
-                "❌ У вас закончились попытки!\n\n"
-                "💡 Пригласите друга и получите +1 попытку!"
-            )
-            return
-        
         await query.edit_message_text(
             "✅ Отлично!\n\n"
             "📋 Теперь отправьте cookie в бота\n"
@@ -1216,17 +1207,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del context.user_data['mailing_type']
         return
     
-    # ОБРАБОТКА КЛЮЧЕВОГО СЛОВА - ТРАТИМ ПОПЫТКУ
+    # ОБРАБОТКА КЛЮЧЕВОГО СЛОВА - ТУТ ТРАТИМ ПОПЫТКУ
     if KEYWORD in user_message:
         # Проверяем попытки
-        if get_available_attempts(user_id) <= 0:
+        available = get_available_attempts(user_id)
+        if available <= 0:
             await update.message.reply_text(
                 "❌ У вас закончились попытки!\n\n"
                 "💡 Пригласите друга и получите +1 попытку!"
             )
             return
         
-        # Используем попытку
+        # ТРАТИМ ПОПЫТКУ
         use_attempt(user_id)
         
         save_keyword_user(
