@@ -714,17 +714,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Отправляем видео и сохраняем сообщение
-        video_msg = await query.message.reply_video(
-            video="https://t.me/cookieeditort/3",
-            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
-            reply_markup=reply_markup
+        # Сначала отправляем текст с кнопками
+        await query.edit_message_text(
+            "📱 Вы выбрали телефон.\n\n"
+            "Посмотрите видео ниже и выполните все указания:",
+            reply_markup=keyboard_markup
         )
-        # Удаляем сообщение с выбором устройства
-        try:
-            await query.message.delete()
-        except:
-            pass
+        
+        # Потом отправляем видео отдельным сообщением
+        await query.message.reply_video(
+            video="https://t.me/cookieeditort/3",
+            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает."
+        )
         return
     
     elif data == "computer":
@@ -736,15 +737,16 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        await query.message.reply_video(
-            video="https://t.me/cookieeditort/4",
-            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+        await query.edit_message_text(
+            "💻 Вы выбрали компьютер.\n\n"
+            "Посмотрите видео ниже и выполните все указания:",
             reply_markup=reply_markup
         )
-        try:
-            await query.message.delete()
-        except:
-            pass
+        
+        await query.message.reply_video(
+            video="https://t.me/cookieeditort/4",
+            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает."
+        )
         return
     
     elif data == "cookies_copied":
