@@ -3,8 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 import asyncio
 import json
 import os
-from datetime import datetime, timedelta
-import hashlib
+from datetime import datetime
 
 # ⚠️ ВСТАВЬ СВОЙ ТОКЕН СЮДА
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -34,7 +33,7 @@ def get_user_attempts(user_id):
         if os.path.exists(ATTEMPTS_FILE):
             with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
                 attempts = json.load(f)
-            return attempts.get(str(user_id), 3)  # По умолчанию 3 попытки
+            return attempts.get(str(user_id), 3)
         return 3
     except:
         return 3
@@ -92,11 +91,9 @@ def add_referral(user_id, referred_user_id):
         if user_id_str not in referrals:
             referrals[user_id_str] = []
         
-        # Проверяем, не приглашал ли уже этого пользователя
         if referred_str not in referrals[user_id_str]:
             referrals[user_id_str].append(referred_str)
             
-            # Даем +1 попытку за приглашение
             current_attempts = get_user_attempts(user_id)
             set_user_attempts(user_id, current_attempts + 1)
             
@@ -111,11 +108,6 @@ def add_referral(user_id, referred_user_id):
 def get_referral_count(user_id):
     """Получает количество приглашенных пользователей"""
     return len(get_user_referrals(user_id))
-
-def generate_referral_link(user_id):
-    """Генерирует реферальную ссылку"""
-    # Создаем короткую ссылку с ID пользователя
-    return f"https://t.me/{BOT_TOKEN.split(':')[0]}?start=ref_{user_id}"
 
 # ===================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ
@@ -142,7 +134,6 @@ def save_all_user(user_id, username, first_name, referrer_id=None):
                 "referrer": str(referrer_id) if referrer_id else None
             }
             
-            # Если есть реферер, добавляем его
             if referrer_id:
                 add_referral(referrer_id, user_id)
         
@@ -321,9 +312,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             referrer_id = int(context.args[0].replace('ref_', ''))
             if referrer_id == user_id:
-                referrer_id = None  # Нельзя пригласить самого себя
+                referrer_id = None
         except:
             referrer_id = None
+    
+    # Проверяем, новый ли пользователь
+    all_users = get_all_users()
+    is_new_user = str(user_id) not in all_users
     
     save_all_user(
         user_id=user.id,
@@ -333,11 +328,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     
     # Если пользователь новый, даем ему 3 попытки
-    if get_user_attempts(user_id) == 3:
-        # Проверяем, был ли уже пользователь в системе
-        all_users = get_all_users()
-        if str(user_id) not in all_users:
-            set_user_attempts(user_id, 3)
+    if is_new_user:
+        set_user_attempts(user_id, 3)
     
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
@@ -371,7 +363,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    # Показываем количество попыток
     await update.message.reply_text(
         f"Привет, {user_name}! 👋\n\n"
         f"🎯 **У тебя {attempts} бесплатных попыток взлома**\n"
@@ -399,7 +390,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         referrals = get_referral_count(user_id)
         attempts = get_user_attempts(user_id)
         
-        # Создаем реферальную ссылку
         bot_username = context.bot.username or "YourBot"
         referral_link = f"https://t.me/{bot_username}?start=ref_{user_id}"
         
@@ -418,25 +408,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         
         keyboard = [
-            [InlineKeyboardButton("📋 Скопировать ссылку", callback_data="copy_referral")],
             [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
-        return
-    
-    elif data == "copy_referral":
-        # Просто показываем ссылку снова
-        bot_username = context.bot.username or "YourBot"
-        referral_link = f"https://t.me/{bot_username}?start=ref_{user_id}"
-        
-        await query.edit_message_text(
-            f"📎 **Твоя реферальная ссылка:**\n"
-            f"`{referral_link}`\n\n"
-            f"Скопируй и отправь другу! 🚀",
-            parse_mode='Markdown'
-        )
         return
     
     # --- ОБЫЧНЫЕ КНОПКИ (ДОСТУПНЫ ВСЕМ) ---
@@ -468,7 +444,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Показываем сколько осталось попыток
         await query.edit_message_text(
             f"🎯 **У тебя {attempts} попыток взлома осталось**\n\n"
             f"Выбери своё устройство:",
@@ -477,7 +452,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "phone":
-        # Проверяем попытки перед использованием
         if not use_attempt(user_id):
             keyboard = [
                 [InlineKeyboardButton("👥 Пригласить друга", callback_data="referral")],
@@ -510,7 +484,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "computer":
-        # Проверяем попытки перед использованием
         if not use_attempt(user_id):
             keyboard = [
                 [InlineKeyboardButton("👥 Пригласить друга", callback_data="referral")],
@@ -731,7 +704,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # Всем пользователям
     elif data == "mailing_all":
         context.user_data['mailing_type'] = 'all'
         await query.edit_message_text(
@@ -741,7 +713,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # Только с ключевым словом
     elif data == "mailing_keyword":
         context.user_data['mailing_type'] = 'keyword'
         await query.edit_message_text(
@@ -801,8 +772,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with open(MESSAGES_FILE, "r", encoding="utf-8") as f:
                 messages = json.load(f)
                 total_messages = len(messages)
-        
-        monthly_users = get_monthly_users_count()
         
         text = "📊 **СТАТИСТИКА БОТА:**\n\n"
         text += f"👥 Всего пользователей: {len(all_users)}\n"
@@ -989,7 +958,7 @@ async def show_users_page(query, context):
     total_users = len(users_list)
     total_pages = (total_users + per_page - 1) // per_page
     
-    if page >= total_pages:
+    if page >= total_pages and total_pages > 0:
         page = total_pages - 1
         context.user_data['users_page'] = page
     
@@ -1141,7 +1110,7 @@ async def show_chat_users_page(query, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await query.edit_message_text(
-        text + "\n✅ - отправил ключевое слово\n❌ - не отправлял",
+        text + "✅ - отправил ключевое слово\n❌ - не отправлял",
         reply_markup=reply_markup
     )
 
@@ -1223,7 +1192,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         sent = 0
         failed = 0
         
-        # Отправляем себе статус
         status_msg = await update.message.reply_text(f"⏳ Начинаю рассылку для {len(users)} пользователей...")
         
         for user_id, user_data in users.items():
@@ -1248,7 +1216,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del context.user_data['mailing_type']
         return
     
-    # Обычная обработка сообщений (не рассылка)
+    # Обычная обработка сообщений
     if KEYWORD in user_message:
         save_keyword_user(
             user_id=user.id,
@@ -1284,7 +1252,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("Пожалуйста, отправьте правильный cookie для продолжения.")
 
 # ===================================================
-# ОБРАБОТЧИК КОМАНДЫ /cancel (для отмены рассылки)
+# ОБРАБОТЧИК КОМАНДЫ /cancel
 # ===================================================
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1296,7 +1264,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("У вас нет активной рассылки.")
 
 # ===================================================
-# ФУНКЦИЯ ЗАДЕРЖКИ (6 часов 3 минуты)
+# ФУНКЦИЯ ЗАДЕРЖКИ
 # ===================================================
 
 async def send_delayed_message(chat_id, context):
@@ -1324,10 +1292,9 @@ def main():
     
     print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
-    print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
-    print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     print("🎯 У каждого пользователя 3 бесплатные попытки")
     print("👥 За каждого приглашенного друга +1 попытка")
+    print("📊 Пользователей в месяц: 57 926")
     app.run_polling()
 
 if __name__ == "__main__":
