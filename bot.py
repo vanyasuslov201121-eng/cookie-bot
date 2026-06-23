@@ -594,7 +594,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
-    print(f"🔘 Нажата кнопка: {data}")
+    print(f"🔘 Нажата кнопка: {data}")  # Для отладки
     
     # --- НОВЫЕ КНОПКИ ---
     if data == "my_attempts":
@@ -714,17 +714,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Отправляем новое сообщение с видео
-        await update.effective_chat.send_video(
+        # Отправляем видео с кнопками
+        await query.message.reply_video(
             video="https://t.me/cookieeditort/3",
             caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
         # Удаляем сообщение с выбором устройства
-        try:
-            await query.message.delete()
-        except:
-            pass
+        await query.message.delete()
         return
     
     elif data == "computer":
@@ -736,15 +733,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        await update.effective_chat.send_video(
+        await query.message.reply_video(
             video="https://t.me/cookieeditort/4",
             caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
             reply_markup=reply_markup
         )
-        try:
-            await query.message.delete()
-        except:
-            pass
+        await query.message.delete()
         return
     
     elif data == "cookies_copied":
