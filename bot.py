@@ -333,6 +333,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
+    monthly_users = get_monthly_users_count()
     
     # Базовые кнопки для всех
     keyboard = [
@@ -363,8 +364,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
+    # Форматируем число с пробелами для красоты
+    formatted_users = f"{monthly_users:,}".replace(',', ' ')
+    
     await update.message.reply_text(
         f"Привет, {user_name}! 👋\n\n"
+        f"👥 **Пользователей в боте: {formatted_users}**\n"
         f"🎯 **У тебя {attempts} бесплатных попыток взлома**\n"
         f"👥 Приглашено друзей: {referrals}\n"
         f"🔑 За каждого друга +1 попытка\n\n"
@@ -547,6 +552,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user_id = update.effective_user.id
         attempts = get_user_attempts(user_id)
         referrals = get_referral_count(user_id)
+        monthly_users = get_monthly_users_count()
+        formatted_users = f"{monthly_users:,}".replace(',', ' ')
         
         keyboard = [
             [
@@ -576,6 +583,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
             f"Привет, {user_name}! 👋\n\n"
+            f"👥 **Пользователей в боте: {formatted_users}**\n"
             f"🎯 **У тебя {attempts} попыток взлома**\n"
             f"👥 Приглашено друзей: {referrals}\n"
             f"🔑 За каждого друга +1 попытка\n\n"
@@ -1268,7 +1276,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ===================================================
 
 async def send_delayed_message(chat_id, context):
-    delay_seconds = 24 * 3600  # 24 часа
+    delay_seconds = 24 * 3600
     try:
         await asyncio.sleep(delay_seconds)
         await context.bot.send_message(
