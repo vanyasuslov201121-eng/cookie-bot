@@ -537,10 +537,86 @@ async def show_give_attempts_page(query, context, page=0, per_page=10):
     if nav_buttons:
         keyboard.append(nav_buttons)
     
+    keyboard.append([InlineKeyboardButton("🎯 Выдать всем у кого 0", callback_data="give_all_zero")])
     keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text, reply_markup=reply_markup)
+
+# ===================================================
+# ФУНКЦИЯ ДЛЯ ВЫДАЧИ ПОПЫТОК ВСЕМ У КОГО 0
+# ===================================================
+
+async def give_attempts_to_all_zero(query: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Выдает по 1 попытке всем пользователям у которых 0 попыток"""
+    all_users = get_all_users()
+    if not all_users:
+        await query.edit_message_text("📭 Нет пользователей.")
+        return
+    
+    zero_users = []
+    for user_id in all_users.keys():
+        attempts = get_user_attempts(user_id)
+        if attempts <= 0:
+            zero_users.append(user_id)
+    
+    if not zero_users:
+        await query.edit_message_text(
+            "✅ У всех пользователей есть попытки!\n"
+            "Никому не нужно выдавать."
+        )
+        return
+    
+    # Подтверждение перед выдачей
+    keyboard = [
+        [InlineKeyboardButton("✅ ДА, выдать всем", callback_data="confirm_give_all_zero")],
+        [InlineKeyboardButton("❌ Отмена", callback_data="give_attempts_menu")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await query.edit_message_text(
+        f"⚠️ **ВНИМАНИЕ!**\n\n"
+        f"Вы собираетесь выдать по 1 попытке всем пользователям у которых 0 попыток.\n\n"
+        f"👥 Таких пользователей: {len(zero_users)}\n\n"
+        f"Подтвердите действие:",
+        reply_markup=reply_markup
+    )
+
+async def execute_give_all_zero(query: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Выполняет выдачу попыток всем у кого 0"""
+    all_users = get_all_users()
+    zero_users = []
+    for user_id in all_users.keys():
+        attempts = get_user_attempts(user_id)
+        if attempts <= 0:
+            zero_users.append(user_id)
+    
+    if not zero_users:
+        await query.edit_message_text("❌ Нет пользователей с 0 попытками.")
+        return
+    
+    success = 0
+    failed = 0
+    
+    status_msg = await query.edit_message_text(
+        f"⏳ Выдаю попытки {len(zero_users)} пользователям..."
+    )
+    
+    for user_id in zero_users:
+        try:
+            add_attempts(user_id, 1)
+            success += 1
+            await asyncio.sleep(0.1)
+        except Exception as e:
+            failed += 1
+            print(f"Ошибка выдачи попытки {user_id}: {e}")
+    
+    await status_msg.edit_text(
+        f"✅ **Попытки успешно выданы!**\n\n"
+        f"👥 Получили попытку: {success}\n"
+        f"❌ Ошибок: {failed}\n"
+        f"📊 Всего выдано: {success} попыток"
+    )
 
 # ===================================================
 # ОБРАБОТЧИК КОМАНДЫ /start
@@ -807,7 +883,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     # ===================================================
-    # ВЫДАЧА ПОПЫТОК
+    # ВЫДАЧА ПОПЫТОК ВСЕМ У КОГО 0
+    # ===================================================
+    
+    elif data == "give_all_zero":
+        await give_attempts_to_all_zero(query, context)
+        return
+    
+    elif data == "confirm_give_all_zero":
+        await execute_give_all_zero(query, context)
+        return
+    
+    # ===================================================
+    # ВЫДАЧА ПОПЫТОК ОТДЕЛЬНЫМ ПОЛЬЗОВАТЕЛЯМ
     # ===================================================
     
     elif data == "give_attempts_menu":
@@ -1467,6 +1555,7 @@ def main():
     print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
     print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     print("🎯 Для выдачи попыток нажми кнопку 'Выдать попытки' в меню")
+    print("🎯 Для выдачи попыток всем у кого 0 - кнопка 'Выдать всем у кого 0'")
     app.run_polling()
 
 if __name__ == "__main__":
