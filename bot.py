@@ -660,6 +660,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton("Поддержка", callback_data="support"),
             InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
+        ],
+        [
+            InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
         ]
     ]
     
@@ -701,6 +704,26 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
+    
+    # --- ПОКУПКА ROBLOX ---
+    if data == "buy_roblox":
+        keyboard = [
+            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            "💎 **КУПИТЬ ROBLOX** 💎\n\n"
+            "💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n"
+            "📩 **Свяжитесь с нами:**\n"
+            "👤 @To4ka2106\n\n"
+            "⚡ Быстрое оформление\n"
+            "💳 Безопасная оплата\n"
+            "🎁 Лучшие цены\n\n"
+            "Напишите нам прямо сейчас! 🚀",
+            reply_markup=reply_markup,
+            parse_mode='Markdown'
+        )
+        return
     
     # --- РЕФЕРАЛЬНАЯ СИСТЕМА ---
     if data == "referral":
@@ -842,6 +865,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 InlineKeyboardButton("Поддержка", callback_data="support"),
                 InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
+            ],
+            [
+                InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
             ]
         ]
         
