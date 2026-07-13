@@ -658,10 +658,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton("Инструкция", callback_data="cookies"),
         ],
         [
-            InlineKeyboardButton("Поддержка", callback_data="support"),
             InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
-        ],
-        [
             InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
         ]
     ]
@@ -715,7 +712,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "💎 **КУПИТЬ ROBLOX** 💎\n\n"
             "💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n"
             "📩 **Свяжитесь с нами:**\n"
-            "👤 @To4ka2106\n\n"
+            "👤 @h1peoff\n\n"
             "⚡ Быстрое оформление\n"
             "💳 Безопасная оплата\n"
             "🎁 Лучшие цены\n\n"
@@ -845,12 +842,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    elif data == "support":
-        keyboard = [[InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu")]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text("@H1pegold\n8:00-23:00", reply_markup=reply_markup)
-        return
-    
     elif data == "back_to_menu":
         user_name = update.effective_user.first_name
         user_id = update.effective_user.id
@@ -863,10 +854,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton("Инструкция", callback_data="cookies"),
             ],
             [
-                InlineKeyboardButton("Поддержка", callback_data="support"),
                 InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
-            ],
-            [
                 InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
             ]
         ]
