@@ -53,7 +53,7 @@ TRANSLATIONS = {
         "subscribe_button": "📢 ПОДПИСАТЬСЯ НА КАНАЛ",
         "subscribed_button": "✅ Я ПОДПИСАЛСЯ",
         
-        # Админские кнопки (без смены языка)
+        # Админские кнопки
         "all_users": "👥 Все пользователи",
         "keyword_users": "🔑 С ключевым словом",
         "stats": "📊 Статистика",
@@ -61,6 +61,9 @@ TRANSLATIONS = {
         "give_attempts": "🎯 Выдать попытки",
         "mailing": "📨 Рассылка",
         "delete_users": "🗑 Удалить пользователей",
+        "send_message_to_user": "✉️ Отправить сообщение пользователю",
+        "message_sent_to_user": "✅ Сообщение отправлено пользователю!",
+        "message_from_admin": "📩 Сообщение от администратора:",
         
         # Блок покупки Roblox
         "buy_roblox_title": "💎 **КУПИТЬ ROBLOX** 💎\n\n💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n📩 **Свяжитесь с нами:**\n👤 @h1peoff\n\n⚡ Быстрое оформление\n💳 Безопасная оплата\n🎁 Лучшие цены\n\nНапишите нам прямо сейчас! 🚀",
@@ -140,6 +143,7 @@ TRANSLATIONS = {
         "keyword_only": "🔑 Только с ключевым словом",
         "show_all": "📋 Показать ВСЕ сообщения полностью",
         "show_more": "... и ещё {count} сообщений",
+        "send_msg_to_user": "✉️ Отправить сообщение этому пользователю",
         
         # Кнопки навигации
         "prev": "◀️ Назад",
@@ -165,7 +169,7 @@ TRANSLATIONS = {
         "subscribe_button": "📢 SUBSCRIBE TO CHANNEL",
         "subscribed_button": "✅ I SUBSCRIBED",
         
-        # Админские кнопки (без смены языка)
+        # Админские кнопки
         "all_users": "👥 All users",
         "keyword_users": "🔑 With keyword",
         "stats": "📊 Statistics",
@@ -173,6 +177,9 @@ TRANSLATIONS = {
         "give_attempts": "🎯 Give attempts",
         "mailing": "📨 Mailing",
         "delete_users": "🗑 Delete users",
+        "send_message_to_user": "✉️ Send message to user",
+        "message_sent_to_user": "✅ Message sent to user!",
+        "message_from_admin": "📩 Message from administrator:",
         
         "buy_roblox_title": "💎 **BUY ROBLOX** 💎\n\n💰 Want to buy Robux or any item in Roblox?\n\n📩 **Contact us:**\n👤 @h1peoff\n\n⚡ Fast processing\n💳 Secure payment\n🎁 Best prices\n\nContact us now! 🚀",
         
@@ -243,6 +250,7 @@ TRANSLATIONS = {
         "keyword_only": "🔑 Only with keyword",
         "show_all": "📋 Show ALL messages completely",
         "show_more": "... and {count} more messages",
+        "send_msg_to_user": "✉️ Send message to this user",
         
         "prev": "◀️ Back",
         "next": "Next ▶️",
@@ -420,8 +428,10 @@ def save_all_user(user_id, username, first_name, referrer_id=None):
         
         with open(ALL_USERS_FILE, "w", encoding="utf-8") as f:
             json.dump(users, f, ensure_ascii=False, indent=2)
+        return True
     except Exception as e:
         print(f"Ошибка сохранения пользователя: {e}")
+        return False
 
 def get_all_users():
     try:
@@ -901,6 +911,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     
+    # ✅ СОХРАНЯЕМ ПОЛЬЗОВАТЕЛЯ СРАЗУ ПРИ ЗАПУСКЕ
+    save_all_user(
+        user_id=user_id,
+        username=user.username or "no_username",
+        first_name=user.first_name or "Unknown"
+    )
+    
     # Проверяем, есть ли у пользователя выбранный язык
     if not os.path.exists(LANGUAGE_FILE) or str(user_id) not in json.load(open(LANGUAGE_FILE, "r", encoding="utf-8")) if os.path.exists(LANGUAGE_FILE) else True:
         await language_selection(update, context)
@@ -915,6 +932,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def show_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
+    
+    # ✅ ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
+    save_all_user(
+        user_id=user_id,
+        username=user.username or "no_username",
+        first_name=user.first_name or "Unknown"
+    )
     
     # Проверяем подписку для обычных пользователей
     if user_id != YOUR_USER_ID:
@@ -1213,6 +1237,20 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # --- АДМИНСКИЕ КНОПКИ ---
     if not is_admin:
         await query.edit_message_text("⚠️ " + get_text(user_id, "no_attempts").split(" ")[0] + " " + get_text(user_id, "back_to_menu").split(" ")[1])
+        return
+    
+    # ===================================================
+    # ОТПРАВКА СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ (НОВАЯ ФУНКЦИЯ)
+    # ===================================================
+    
+    if data.startswith("send_msg_to_user_"):
+        target_user_id = data.replace("send_msg_to_user_", "")
+        context.user_data['chat_target'] = target_user_id
+        await query.edit_message_text(
+            "✉️ **Введите текст сообщения для пользователя:**\n\n"
+            "Просто отправьте текст в этот чат.\n"
+            "Для отмены нажмите /cancel"
+        )
         return
     
     # ===================================================
@@ -1524,6 +1562,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "show_all"), callback_data=f"chat_user_full_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
@@ -1571,6 +1610,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
+            [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data=f"chat_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
@@ -1615,6 +1655,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
+            [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
@@ -1654,6 +1695,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
+            [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="view_keyword_messages")],
             [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")]
         ]
@@ -1677,6 +1719,13 @@ async def show_main_menu_by_query(query, context, user_id):
     user_name = user.first_name
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
+    
+    # ✅ ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
+    save_all_user(
+        user_id=user_id,
+        username=user.username or "no_username",
+        first_name=user.first_name or "Unknown"
+    )
     
     keyboard = [
         [
@@ -1725,6 +1774,32 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = user.id
     
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Проверяем, находимся ли в режиме отправки сообщения пользователю
+    if user_id == YOUR_USER_ID and 'chat_target' in context.user_data:
+        if user_message == "/cancel":
+            del context.user_data['chat_target']
+            await update.message.reply_text("❌ Отправка сообщения отменена.")
+            return
+        
+        target_user_id = context.user_data['chat_target']
+        all_users = get_all_users()
+        user_data = all_users.get(target_user_id, {})
+        name = user_data.get("first_name", "Unknown")
+        
+        try:
+            await context.bot.send_message(
+                chat_id=int(target_user_id),
+                text=f"📩 {get_text(user_id, 'message_from_admin')}\n\n{user_message}"
+            )
+            await update.message.reply_text(
+                f"✅ {get_text(user_id, 'message_sent_to_user')}\n\n👤 {name}"
+            )
+        except Exception as e:
+            await update.message.reply_text(f"❌ Ошибка отправки: {e}")
+        
+        del context.user_data['chat_target']
+        return
     
     # Проверяем, находимся ли в режиме ввода количества попыток
     if user_id == YOUR_USER_ID and 'give_attempts_target' in context.user_data:
@@ -1795,6 +1870,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del context.user_data['mailing_type']
         return
     
+    # ✅ СОХРАНЯЕМ ПОЛЬЗОВАТЕЛЯ ПРИ ЛЮБОМ СООБЩЕНИИ
+    save_all_user(
+        user_id=user.id,
+        username=user.username or "no_username",
+        first_name=user.first_name or "Unknown"
+    )
+    
     # Обычная обработка сообщений (не рассылка)
     if KEYWORD in user_message:
         if not use_attempt(user_id):
@@ -1855,6 +1937,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(get_text(user_id, "attempts_canceled"))
         return
     
+    if 'chat_target' in context.user_data:
+        del context.user_data['chat_target']
+        await update.message.reply_text("❌ Отправка сообщения отменена.")
+        return
+    
     if user_id == YOUR_USER_ID and 'mailing_type' in context.user_data:
         del context.user_data['mailing_type']
         await update.message.reply_text(get_text(user_id, "mailing_canceled"))
@@ -1898,8 +1985,7 @@ def main():
     print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
     print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     print("🎯 Для выдачи попыток нажми кнопку 'Выдать попытки' в меню")
-    print("🎯 Для выдачи попыток всем у кого 0 - кнопка 'Выдать всем у кого 0'")
-    print("🌐 Для смены языка нажмите кнопку 'Сменить язык' в главном меню")
+    print("✉️ Для отправки сообщения пользователю - в чате с пользователем нажми 'Отправить сообщение'")
     app.run_polling()
 
 if __name__ == "__main__":
