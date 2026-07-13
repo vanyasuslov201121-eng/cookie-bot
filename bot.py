@@ -1048,7 +1048,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_main_menu_by_query(query, context, user_id)
         return
     
-    # --- СМЕНА ЯЗЫКА (НОВАЯ КНОПКА) ---
+    # --- СМЕНА ЯЗЫКА (ТОЛЬКО В ГЛАВНОМ МЕНЮ) ---
     if data == "change_language":
         keyboard = [
             [InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
@@ -1084,7 +1084,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # --- ПОКУПКА ROBLOX ---
     if data == "buy_roblox":
         keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1104,7 +1103,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         referral_link = f"https://t.me/{bot_username}?start=ref_{user_id}"
         
         keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1138,8 +1136,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if attempts <= 0:
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
-                [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
-                [InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu")]
+                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(
@@ -1154,10 +1151,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton(get_text(user_id, "computer"), callback_data="computer"),
             ],
             [
-                InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
-            ],
-            [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1171,11 +1165,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "phone":
         keyboard = [
             [
-                InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
             ],
             [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_device"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1190,11 +1183,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "computer":
         keyboard = [
             [
-                InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
             ],
             [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_device"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1206,9 +1198,27 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.delete_message()
         return
     
+    elif data == "back_to_device":
+        # Возврат к выбору устройства
+        attempts = get_user_attempts(user_id)
+        keyboard = [
+            [
+                InlineKeyboardButton(get_text(user_id, "phone"), callback_data="phone"),
+                InlineKeyboardButton(get_text(user_id, "computer"), callback_data="computer"),
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu"),
+            ]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(
+            get_text(user_id, "device_choice", attempts=attempts),
+            reply_markup=reply_markup
+        )
+        return
+    
     elif data == "cookies_copied_phone" or data == "cookies_copied_computer":
         keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1220,7 +1230,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     elif data == "cookies":
         keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1240,7 +1249,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     # ===================================================
-    # ОТПРАВКА СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ (НОВАЯ ФУНКЦИЯ)
+    # ОТПРАВКА СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ
     # ===================================================
     
     if data.startswith("send_msg_to_user_"):
@@ -1292,7 +1301,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("➕ +5 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_5")],
             [InlineKeyboardButton("➕ +10 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_10")],
             [InlineKeyboardButton("🔢 " + get_text(user_id, "give_more"), callback_data=f"give_attempts_input_{target_user_id}")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="give_attempts_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1317,7 +1325,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "give_more"), callback_data=f"give_attempts_user_{target_user_id}")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="give_attempts_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1342,7 +1349,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "delete_single_user"), callback_data="delete_single_user")],
             [InlineKeyboardButton(get_text(user_id, "delete_all_users"), callback_data="delete_all_users_confirm")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1365,7 +1371,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             button_text = f"🗑 {name} (@{username})"
             keyboard.append([InlineKeyboardButton(button_text, callback_data=f"confirm_delete_{user_id_str}")])
         
-        keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
         keyboard.append([InlineKeyboardButton(get_text(user_id, "back"), callback_data="delete_users_menu")])
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
@@ -1383,7 +1388,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "yes_delete"), callback_data=f"execute_delete_{target_user_id}")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="delete_single_user")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1413,7 +1417,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "delete_all_users_confirm":
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "confirm_delete_all"), callback_data="execute_delete_all")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="delete_users_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1440,7 +1443,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "mailing_all"), callback_data="mailing_all")],
             [InlineKeyboardButton(get_text(user_id, "mailing_keyword"), callback_data="mailing_keyword")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1495,7 +1497,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         today_count = sum(1 for user_data in all_users.values() if user_data.get("first_seen", "").startswith(today))
         
         keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")],
             [InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users")]
         ]
@@ -1563,7 +1564,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "show_all"), callback_data=f"chat_user_full_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
@@ -1609,7 +1609,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data=f"chat_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
@@ -1654,7 +1653,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")],
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
@@ -1694,7 +1692,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += f"\n... " + get_text(user_id, "show_more", count=len(messages)-30)
         
         keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "send_msg_to_user"), callback_data=f"send_msg_to_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="view_keyword_messages")],
             [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")]
@@ -1882,7 +1879,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not use_attempt(user_id):
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
-                [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
                 [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
