@@ -1162,7 +1162,23 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
+    # ===================================================
+    # ИСПРАВЛЕННЫЕ ОБРАБОТЧИКИ ДЛЯ ТЕЛЕФОНА И КОМПЬЮТЕРА
+    # ===================================================
     elif data == "phone":
+        # Используем попытку пользователя при выборе устройства
+        if not use_attempt(user_id):
+            keyboard = [
+                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                get_text(user_id, "no_attempts"),
+                reply_markup=reply_markup
+            )
+            return
+        
         keyboard = [
             [
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
@@ -1181,6 +1197,19 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "computer":
+        # Используем попытку пользователя при выборе устройства
+        if not use_attempt(user_id):
+            keyboard = [
+                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                get_text(user_id, "no_attempts"),
+                reply_markup=reply_markup
+            )
+            return
+        
         keyboard = [
             [
                 InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
@@ -1199,8 +1228,22 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     
     elif data == "back_to_device":
-        # Возврат к выбору устройства
+        # Возврат к выбору устройства (без повторного использования попытки)
         attempts = get_user_attempts(user_id)
+        
+        # Проверяем, есть ли у пользователя попытки
+        if attempts <= 0:
+            keyboard = [
+                [InlineKeyboardButton(get_text(user_id, "referral"), callback_data="referral")],
+                [InlineKeyboardButton(get_text(user_id, "back_to_menu"), callback_data="back_to_menu")]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(
+                get_text(user_id, "no_attempts"),
+                reply_markup=reply_markup
+            )
+            return
+        
         keyboard = [
             [
                 InlineKeyboardButton(get_text(user_id, "phone"), callback_data="phone"),
